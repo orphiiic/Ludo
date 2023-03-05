@@ -9,6 +9,262 @@ import time
 from random import randint, choice
 
 class Ludo:
+    options = ["Aruba",
+    "Afghanistan",
+    "Angola",
+    "Anguilla",
+    "Albania",
+    "Aland",
+    "Andorra",
+    "United Arab Emirates",
+    "Argentina",
+    "Armenia",
+    "American Samoa",
+    "Antarctica",
+    "Ashmore and Cartier Islands",
+    "French Southern and Antarctic Lands",
+    "Antigua and Barbuda",
+    "Australia",
+    "Austria",
+    "Azerbaijan",
+    "Burundi",
+    "Belgium",
+    "Benin",
+    "Burkina Faso",
+    "Bangladesh",
+    "Bulgaria",
+    "Bahrain",
+    "The Bahamas",
+    "Bosnia and Herzegovina",
+    "Bajo Nuevo Bank (Petrel Is.)",
+    "Saint Barthelemy",
+    "Belarus",
+    "Belize",
+    "Bermuda",
+    "Bolivia",
+    "Brazil",
+    "Barbados",
+    "Brunei",
+    "Bhutan",
+    "Botswana",
+    "Central African Republic",
+    "Canada",
+    "Switzerland",
+    "Chile",
+    "China",
+    "Ivory Coast",
+    "Clipperton Island",
+    "Cameroon",
+    "Cyprus No Mans Area",
+    "Democratic Republic of the Congo",
+    "Republic of Congo",
+    "Cook Islands",
+    "Colombia",
+    "Comoros",
+    "Cape Verde",
+    "Costa Rica",
+    "Coral Sea Islands",
+    "Cuba",
+    "Curaçao",
+    "Cayman Islands",
+    "Northern Cyprus",
+    "Cyprus",
+    "Czech Republic",
+    "Germany",
+    "Djibouti",
+    "Dominica",
+    "Denmark",
+    "Dominican Republic",
+    "Algeria",
+    "Ecuador",
+    "Egypt",
+    "Eritrea",
+    "Dhekelia Sovereign Base Area",
+    "Spain",
+    "Estonia",
+    "Ethiopia",
+    "Finland",
+    "Fiji",
+    "Falkland Islands",
+    "France",
+    "Faroe Islands",
+    "Federated States of Micronesia",
+    "Gabon",
+    "United Kingdom",
+    "Georgia",
+    "Guernsey",
+    "Ghana",
+    "Gibraltar",
+    "Guinea",
+    "Gambia",
+    "Guinea Bissau",
+    "Equatorial Guinea",
+    "Greece",
+    "Grenada",
+    "Greenland",
+    "Guatemala",
+    "Guam",
+    "Guyana",
+    "Hong Kong S.A.R.",
+    "Heard Island and McDonald Islands",
+    "Honduras",
+    "Croatia",
+    "Haiti",
+    "Hungary",
+    "Indonesia",
+    "Isle of Man",
+    "India",
+    "Indian Ocean Territories",
+    "British Indian Ocean Territory",
+    "Ireland",
+    "Iran",
+    "Iraq",
+    "Iceland",
+    "Israel",
+    "Italy",
+    "Jamaica",
+    "Jersey",
+    "Jordan",
+    "Japan",
+    "Baykonur Cosmodrome",
+    "Siachen Glacier",
+    "Kazakhstan",
+    "Kenya",
+    "Kyrgyzstan",
+    "Cambodia",
+    "Kiribati",
+    "Saint Kitts and Nevis",
+    "South Korea",
+    "Kosovo",
+    "Kuwait",
+    "Laos",
+    "Lebanon",
+    "Liberia",
+    "Libya",
+    "Saint Lucia",
+    "Liechtenstein",
+    "Sri Lanka",
+    "Lesotho",
+    "Lithuania",
+    "Luxembourg",
+    "Latvia",
+    "Macao S.A.R",
+    "Saint Martin",
+    "Morocco",
+    "Monaco",
+    "Moldova",
+    "Madagascar",
+    "Maldives",
+    "Mexico",
+    "Marshall Islands",
+    "Macedonia",
+    "Mali",
+    "Malta",
+    "Myanmar",
+    "Montenegro",
+    "Mongolia",
+    "Northern Mariana Islands",
+    "Mozambique",
+    "Mauritania",
+    "Montserrat",
+    "Mauritius",
+    "Malawi",
+    "Malaysia",
+    "Namibia",
+    "New Caledonia",
+    "Niger",
+    "Norfolk Island",
+    "Nigeria",
+    "Nicaragua",
+    "Niue",
+    "Netherlands",
+    "Norway",
+    "Nepal",
+    "Nauru",
+    "New Zealand",
+    "Oman",
+    "Pakistan",
+    "Panama",
+    "Pitcairn Islands",
+    "Peru",
+    "Spratly Islands",
+    "Philippines",
+    "Palau",
+    "Papua New Guinea",
+    "Poland",
+    "Puerto Rico",
+    "North Korea",
+    "Portugal",
+    "Paraguay",
+    "Palestine",
+    "French Polynesia",
+    "Qatar",
+    "Romania",
+    "Russia",
+    "Rwanda",
+    "Western Sahara",
+    "Saudi Arabia",
+    "Scarborough Reef",
+    "Sudan",
+    "South Sudan",
+    "Senegal",
+    "Serranilla Bank",
+    "Singapore",
+    "South Georgia and South Sandwich Islands",
+    "Saint Helena",
+    "Solomon Islands",
+    "Sierra Leone",
+    "El Salvador",
+    "San Marino",
+    "Somaliland",
+    "Somalia",
+    "Saint Pierre and Miquelon",
+    "Republic of Serbia",
+    "Sao Tome and Principe",
+    "Suriname",
+    "Slovakia",
+    "Slovenia",
+    "Sweden",
+    "Swaziland",
+    "Sint Maarten",
+    "Seychelles",
+    "Syria",
+    "Turks and Caicos Islands",
+    "Chad",
+    "Togo",
+    "Thailand",
+    "Tajikistan",
+    "Turkmenistan",
+    "East Timor",
+    "Tonga",
+    "Trinidad and Tobago",
+    "Tunisia",
+    "Turkey",
+    "Tuvalu",
+    "Taiwan",
+    "United Republic of Tanzania",
+    "Uganda",
+    "Ukraine",
+    "United States Minor Outlying Islands",
+    "Uruguay",
+    "United States of America",
+    "US Naval Base Guantanamo Bay",
+    "Uzbekistan",
+    "Vatican",
+    "Saint Vincent and the Grenadines",
+    "Venezuela",
+    "British Virgin Islands",
+    "United States Virgin Islands",
+    "Vietnam",
+    "Vanuatu",
+    "Wallis and Futuna",
+    "Akrotiri Sovereign Base Area",
+    "Samoa",
+    "Yemen",
+    "South Africa",
+    "Zambia",
+    "Zimbabwe"]
+
     # this function calculates the centre of the window
     def centerWindow(width, height, root):  
         screen_width = root.winfo_screenwidth() 
@@ -16,292 +272,6 @@ class Ludo:
         x = (screen_width/2) - (width/2)
         y = (screen_height/2) - (height/2)
         return int(x), int(y) 
-    
-    def user_input(top):
-        # top.destsroy()
-        top2 = Toplevel(background="black")
-        x, y = Ludo.centerWindow(800, 650, top2)
-        top2.geometry(f"800x650+{x}+{y}")
-        top2.title("Ludo Master")
-        path="Images/screen3.png" 
-        image = (Image.open(path))
-        resized_image= image.resize((800,500), Image.ANTIALIAS)
-        new_image= ImageTk.PhotoImage(resized_image)
-        label = tk.Label(top2, image = new_image, compound=tk.CENTER, bg="black", width=800, height=650).pack()
-        top2.update()
-        usernameLabel = Label(top2, text="Username", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=200, y=100)
-        usernameEntry = Entry(top2).place(x=350, y=100)
-        ageLabel = Label(top2, text="Age", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=200, y=170)
-        ageEntry = Entry(top2).place(x=350, y=170)
-        country = StringVar(top2)
-        countryLabel = Label(top2, text="Country", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=200, y=240)
-
-        country.set("None") # default value
-        options = ["Aruba",
-"Afghanistan",
-"Angola",
-"Anguilla",
-"Albania",
-"Aland",
-"Andorra",
-"United Arab Emirates",
-"Argentina",
-"Armenia",
-"American Samoa",
-"Antarctica",
-"Ashmore and Cartier Islands",
-"French Southern and Antarctic Lands",
-"Antigua and Barbuda",
-"Australia",
-"Austria",
-"Azerbaijan",
-"Burundi",
-"Belgium",
-"Benin",
-"Burkina Faso",
-"Bangladesh",
-"Bulgaria",
-"Bahrain",
-"The Bahamas",
-"Bosnia and Herzegovina",
-"Bajo Nuevo Bank (Petrel Is.)",
-"Saint Barthelemy",
-"Belarus",
-"Belize",
-"Bermuda",
-"Bolivia",
-"Brazil",
-"Barbados",
-"Brunei",
-"Bhutan",
-"Botswana",
-"Central African Republic",
-"Canada",
-"Switzerland",
-"Chile",
-"China",
-"Ivory Coast",
-"Clipperton Island",
-"Cameroon",
-"Cyprus No Mans Area",
-"Democratic Republic of the Congo",
-"Republic of Congo",
-"Cook Islands",
-"Colombia",
-"Comoros",
-"Cape Verde",
-"Costa Rica",
-"Coral Sea Islands",
-"Cuba",
-"Curaçao",
-"Cayman Islands",
-"Northern Cyprus",
-"Cyprus",
-"Czech Republic",
-"Germany",
-"Djibouti",
-"Dominica",
-"Denmark",
-"Dominican Republic",
-"Algeria",
-"Ecuador",
-"Egypt",
-"Eritrea",
-"Dhekelia Sovereign Base Area",
-"Spain",
-"Estonia",
-"Ethiopia",
-"Finland",
-"Fiji",
-"Falkland Islands",
-"France",
-"Faroe Islands",
-"Federated States of Micronesia",
-"Gabon",
-"United Kingdom",
-"Georgia",
-"Guernsey",
-"Ghana",
-"Gibraltar",
-"Guinea",
-"Gambia",
-"Guinea Bissau",
-"Equatorial Guinea",
-"Greece",
-"Grenada",
-"Greenland",
-"Guatemala",
-"Guam",
-"Guyana",
-"Hong Kong S.A.R.",
-"Heard Island and McDonald Islands",
-"Honduras",
-"Croatia",
-"Haiti",
-"Hungary",
-"Indonesia",
-"Isle of Man",
-"India",
-"Indian Ocean Territories",
-"British Indian Ocean Territory",
-"Ireland",
-"Iran",
-"Iraq",
-"Iceland",
-"Israel",
-"Italy",
-"Jamaica",
-"Jersey",
-"Jordan",
-"Japan",
-"Baykonur Cosmodrome",
-"Siachen Glacier",
-"Kazakhstan",
-"Kenya",
-"Kyrgyzstan",
-"Cambodia",
-"Kiribati",
-"Saint Kitts and Nevis",
-"South Korea",
-"Kosovo",
-"Kuwait",
-"Laos",
-"Lebanon",
-"Liberia",
-"Libya",
-"Saint Lucia",
-"Liechtenstein",
-"Sri Lanka",
-"Lesotho",
-"Lithuania",
-"Luxembourg",
-"Latvia",
-"Macao S.A.R",
-"Saint Martin",
-"Morocco",
-"Monaco",
-"Moldova",
-"Madagascar",
-"Maldives",
-"Mexico",
-"Marshall Islands",
-"Macedonia",
-"Mali",
-"Malta",
-"Myanmar",
-"Montenegro",
-"Mongolia",
-"Northern Mariana Islands",
-"Mozambique",
-"Mauritania",
-"Montserrat",
-"Mauritius",
-"Malawi",
-"Malaysia",
-"Namibia",
-"New Caledonia",
-"Niger",
-"Norfolk Island",
-"Nigeria",
-"Nicaragua",
-"Niue",
-"Netherlands",
-"Norway",
-"Nepal",
-"Nauru",
-"New Zealand",
-"Oman",
-"Pakistan",
-"Panama",
-"Pitcairn Islands",
-"Peru",
-"Spratly Islands",
-"Philippines",
-"Palau",
-"Papua New Guinea",
-"Poland",
-"Puerto Rico",
-"North Korea",
-"Portugal",
-"Paraguay",
-"Palestine",
-"French Polynesia",
-"Qatar",
-"Romania",
-"Russia",
-"Rwanda",
-"Western Sahara",
-"Saudi Arabia",
-"Scarborough Reef",
-"Sudan",
-"South Sudan",
-"Senegal",
-"Serranilla Bank",
-"Singapore",
-"South Georgia and South Sandwich Islands",
-"Saint Helena",
-"Solomon Islands",
-"Sierra Leone",
-"El Salvador",
-"San Marino",
-"Somaliland",
-"Somalia",
-"Saint Pierre and Miquelon",
-"Republic of Serbia",
-"Sao Tome and Principe",
-"Suriname",
-"Slovakia",
-"Slovenia",
-"Sweden",
-"Swaziland",
-"Sint Maarten",
-"Seychelles",
-"Syria",
-"Turks and Caicos Islands",
-"Chad",
-"Togo",
-"Thailand",
-"Tajikistan",
-"Turkmenistan",
-"East Timor",
-"Tonga",
-"Trinidad and Tobago",
-"Tunisia",
-"Turkey",
-"Tuvalu",
-"Taiwan",
-"United Republic of Tanzania",
-"Uganda",
-"Ukraine",
-"United States Minor Outlying Islands",
-"Uruguay",
-"United States of America",
-"US Naval Base Guantanamo Bay",
-"Uzbekistan",
-"Vatican",
-"Saint Vincent and the Grenadines",
-"Venezuela",
-"British Virgin Islands",
-"United States Virgin Islands",
-"Vietnam",
-"Vanuatu",
-"Wallis and Futuna",
-"Akrotiri Sovereign Base Area",
-"Samoa",
-"Yemen",
-"South Africa",
-"Zambia",
-"Zimbabwe"]
-
-        w = OptionMenu(top2, country, *options)
-        w.place(x = 350, y = 240)
-        PLAY_BUTTON = Button(top2, text="PLAY",font=("Papyrus",40,"italic"), fg="black", bg="#ade374",   borderwidth=0, command=lambda: Ludo.user_input(top) )
-        PLAY_BUTTON.place(x=320, y=500) 
-
-
- 
-
-
 
     # for drawing the ludo board 
     def __init__(self, root,six_side_block,five_side_block,four_side_block,three_side_block,two_side_block,one_side_block):
@@ -666,9 +636,9 @@ class Ludo:
         new_image= ImageTk.PhotoImage(resized_image)
         label = tk.Label(top, image = new_image, compound=tk.CENTER, bg="black", width=800, height=650).pack()
         # buttons for single, multilayer and simulation
-        PLAY_BUTTON = Button(top, text="SINGLE PLAYER",font=("Papyrus",40,"italic"), fg="black", bg="#ade374",   borderwidth=0, command=lambda: Ludo.user_input(top) )
+        PLAY_BUTTON = Button(top, text="SINGLE PLAYER",font=("Papyrus",40,"italic"), fg="black", bg="#ade374",   borderwidth=0, command=lambda: user_input(top) )
         PLAY_BUTTON.place(x=220, y=100) 
-        Multi_Button = Button(top, text="MULTI PLAYER",font=("Papyrus",40,"italic"), fg="black", bg="#fcb542",   borderwidth=0)
+        Multi_Button = Button(top, text="MULTI PLAYER",font=("Papyrus",40,"italic"), fg="black", bg="#fcb542",   borderwidth=0, command=lambda: multi_user_input())
         Multi_Button.place(x=220, y=200) 
         Simulation_Button = Button(top, text="SIMULATION",font=("Papyrus",40,"italic"), fg="black", bg="#74c0e3",   borderwidth=0)
         Simulation_Button.place(x=240, y=300) 
@@ -686,36 +656,156 @@ class Ludo:
 
         def go_back(top):
             top.destroy()
+        
+        def user_input(top):
+        # top.destsroy()
+            top2 = Toplevel(background="black")
+            x, y = Ludo.centerWindow(800, 650, top2)
+            top2.geometry(f"800x650+{x}+{y}")
+            top2.title("Ludo Master")
+            path="Images/screen3.png" 
+            image = (Image.open(path))
+            resized_image= image.resize((800,500), Image.ANTIALIAS)
+            new_image= ImageTk.PhotoImage(resized_image)
+            label = tk.Label(top2, image = new_image, compound=tk.CENTER, bg="black", width=800, height=650).pack()
+            top2.update()
+            usernameLabel = Label(top2, text="Username", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=200, y=100)
+            usernameEntry = Entry(top2).place(x=350, y=100)
+            ageLabel = Label(top2, text="Age", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=200, y=170)
+            ageEntry = Entry(top2).place(x=350, y=170)
+            country = StringVar(top2)
+            countryLabel = Label(top2, text="Country", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=200, y=240)
+            country.set("None") # default value
+            opt = Ludo.options
+            w = OptionMenu(top2, country, *opt)
+            w.place(x = 350, y = 240)
+            PLAY_BUTTON = Button(top2, text="PLAY",font=("Papyrus",40,"italic"), fg="black", bg="#ade374",   borderwidth=0, command=lambda: operate(1, top2) )
+            PLAY_BUTTON.place(x=320, y=500) 
 
-        def filtering():# Total player input value filtering
-            def input_filtering(coin_number):# Input value Filtering
-                try:
-                    return True if (4>=int(coin_number)>=2) or type(coin_number) == int else False
-                except:
-                    return False
+        def multi_user_input():
+                top3 = Toplevel(background="black")
+                x, y = Ludo.centerWindow(800, 650, top3)
+                top3.geometry(f"800x650+{x}+{y}")
+                top3.title("Ludo Master")
+                new_image= ImageTk.PhotoImage(resized_image)
+                label = tk.Label(top3, compound=tk.CENTER, bg="black", width=800, height=650).pack()
+                top3.update()
 
-            response_take = input_filtering(take_entry.get())
-            if response_take:
-                for player_index in range(int(take_entry.get())):
-                    self.total_people_play.append(player_index)
-                print(self.total_people_play)
-                self.make_command()
-                top.destroy()
-            else:
-                messagebox.showerror("Input Error", "Please input number of players between 2 and 4")
-                top.destroy()
-                self.take_initial_control()
+                numberPlayersLabel = Label(top3, text="Number of Players", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=200, y=50)
+                numberPlayersText = Entry(top3, width = 5)
+                numberPlayersText.place(x=400, y=50)
+                Submit_Button = Button(top3, text="SUBMIT",width = 200, height = 30, font=("Papyrus",15,"italic"), fg="black", bg="#ade374",   borderwidth=0, command=lambda: filtering())
+                Submit_Button.place(x=500, y=50) 
+
+
+                # PLAY_BUTTON = Button(top3, text="PLAY",font=("Papyrus",40,"italic"), fg="black", bg="#ade374",   borderwidth=0, command=lambda: filtering() )
+                # PLAY_BUTTON.place(x=320, y=600) 
+
+                def player1():
+                    # player 1 information
+                    usernameLabel = Label(top3, text="Username", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=50, y=150)
+                    usernameEntry = Entry(top3).place(x=200, y=150)
+                    ageLabel = Label(top3, text="Age", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=50, y=200)
+                    ageEntry = Entry(top3).place(x=200, y=200)
+                    country = StringVar(top3)
+                    countryLabel = Label(top3, text="Country", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=50, y=250)
+                    country.set("None") # default value
+                    opt = Ludo.options
+                    w = OptionMenu(top3, country, *opt)
+                    w.place(x = 200, y = 250)
+
+                def player2():
+                    # player 2 information
+                    usernameLabel2 = Label(top3, text="Username", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=50, y=400)
+                    usernameEntry2 = Entry(top3).place(x=200, y=400)
+                    ageLabel2 = Label(top3, text="Age", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=50, y=450)
+                    ageEntry2 = Entry(top3).place(x=200, y=450)
+                    country2 = StringVar(top3)
+                    countryLabel2 = Label(top3, text="Country", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=50, y=500)
+                    country2.set("None") # default value
+                    opt = Ludo.options
+                    w2 = OptionMenu(top3, country2, *opt)
+                    w2.place(x = 200, y = 500)
+                
+                def player3():
+                    # player 3 information
+                    usernameLabel3 = Label(top3, text="Username", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=400, y=150)
+                    usernameEntry3 = Entry(top3).place(x=550, y=150)
+                    ageLabel3 = Label(top3, text="Age", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=400, y=200)
+                    ageEntry3 = Entry(top3).place(x=550, y=200)
+                    country3 = StringVar(top3)
+                    countryLabel3 = Label(top3, text="Country", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=400, y=250)
+                    country3.set("None") # default value
+                    opt = Ludo.options
+                    w3 = OptionMenu(top3, country3, *opt)
+                    w3.place(x = 550, y = 250)
+
+                def player4():
+                    # player 4 information
+                    usernameLabel4 = Label(top3, text="Username", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=400, y=400)
+                    usernameEntry4 = Entry(top3).place(x=550, y=400)
+                    ageLabel4 = Label(top3, text="Age", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=400, y=450)
+                    ageEntry4 = Entry(top3).place(x=550, y=450)
+                    country4 = StringVar(top3)
+                    countryLabel4 = Label(top3, text="Country", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=400, y=500)
+                    country4.set("None") # default value
+                    opt = Ludo.options
+                    w4 = OptionMenu(top3, country4, *opt)
+                    w4.place(x = 550, y = 500)
+
+                def filtering():# Total player input value filtering
+                    def input_filtering(coin_number):# Input value Filtering
+                        try:
+                            return True if (4>=int(coin_number)>=2) or type(coin_number) == int else False
+                        except:
+                            return False
+
+                    response_take = input_filtering(numberPlayersText.get())
+                    response_take_int = numberPlayersText.get()
+                    print(response_take_int)
+                    if (response_take_int == 2):
+                        player1()
+                        player2()
+                    elif (response_take_int==3):
+                        player1()
+                        player2()
+                        player3()
+                    elif (response_take_int==4):
+                        player1()
+                        player2()
+                        player3()
+                        player4()
+                    else:
+                        messagebox.showerror("Input Error", "Please input number of players between 2 and 4")
+                        top3.destroy()
+                        top.destroy()
+                        # self.take_initial_control()
+
+                    if response_take:
+                        for player_index in range(int(numberPlayersText.get())):
+                            self.total_people_play.append(player_index)
+                        print(self.total_people_play)
+                        self.make_command()
+                        top3.destroy()
+                        top.destroy()
+                    else:
+                        messagebox.showerror("Input Error", "Please input number of players between 2 and 4")
+                        top3.destroy()
+                        top.destroy()
+                        self.take_initial_control()
 
         # submit_btn = Bsutton(top,text="Submit",bg="#262626",fg="#ade374",font=("Papyrus",13),relief=RAISED,bd=3,command=filtering,state=DISABLED)
         # submit_btn.place(x=330,y=87)
 
-        def operate(ind):
+        def operate(ind, top2):
+            top2.destroy()
+
             # top.destroy()
             top1 = Toplevel(background="black")
             top1.grab_set()
 
             # top.overrideredirect(True)
-            x, y = Ludo.centerWindow(800, 650, top)
+            x, y = Ludo.centerWindow(800, 650, top1)
             top1.geometry(f"800x650+{x}+{y}")
             top1.title("LudoKing")
             path="Images/screen3.png" 
@@ -723,7 +813,7 @@ class Ludo:
             resized_image= image.resize((800,650), Image.ANTIALIAS)
             new_image= ImageTk.PhotoImage(resized_image)
             label = tk.Label(top1, image = new_image, compound=tk.CENTER, bg="black", width=800, height=650).pack()
-            BACK_BUTTON = Button(top1, text="BACK TO HOME",font=("Papyrus",30,"italic"), fg="black", bg="#ade374",   borderwidth=0, command=lambda: go_back(top1) )
+            BACK_BUTTON = Button(top1, text="BACK TO HOME",font=("Papyrus",30,"italic"), fg="black", bg="#ade374",   borderwidth=0, command=lambda: Ludo.go_back(top1) )
             BACK_BUTTON.place(x=250, y=100) 
             if ind:
                 self.robo_prem = 1
@@ -760,6 +850,7 @@ class Ludo:
                         time.sleep(1)
                     top.destroy()
                     top1.destroy()
+
                 except:
                     print("Force Stop Error in Operate")
                 self.block_value_predict[1][1]['state'] = NORMAL
@@ -773,7 +864,7 @@ class Ludo:
         # mvh_btn = Button(top,text="Play With Friends",bg="#262626",fg="#ade374",font=("Papyrus",15),relief=RAISED,bd=3,command=lambda: operate(0), activebackground="#262626")
         # mvh_btn.place(x=260,y=160)
 
-        top.mainloop()
+            top.mainloop()
 
     # Get block value after prediction based on probability
     def make_prediction(self,color_indicator):
