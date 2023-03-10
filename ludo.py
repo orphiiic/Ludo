@@ -4,11 +4,37 @@ from tkinter import messagebox
 from PIL import Image,ImageTk
 import tkinter as tk
 from tkmacosx import Button
+import pandas as pd
+import traceback
+import csv
+import random
+
 
 import time
 from random import randint, choice
 
 class Ludo:
+    gameover =1  
+    tmp_red = []
+    tmp_blue = []
+    tmp_yellow = []
+    tmp_green = []    
+    username_id=[]        
+
+    df = pd.read_csv("stats.csv")
+    game_id= df["game_id"].iloc[-1]
+    game_id = game_id + 1
+    roll = 0
+    usernames = []
+    ages = []
+    genders = []
+    countries = []
+    roll_id = []
+    dice_face = []
+    user_killed = 0
+    user_killed_count = []
+    game_username = []
+
     options = ["Aruba",
     "Afghanistan",
     "Angola",
@@ -610,7 +636,7 @@ class Ludo:
    
     # Total number of players: Control take at first
     def take_initial_control(self):
-        for i in range(4):
+        for i in range(1,4):
             self.block_value_predict[i][1]['state'] = DISABLED
         def on_enter(e):
             e.widget['background'] = '#F2F2F2'
@@ -640,7 +666,7 @@ class Ludo:
         PLAY_BUTTON.place(x=220, y=100) 
         Multi_Button = Button(top, text="MULTI PLAYER",font=("Papyrus",40,"italic"), fg="black", bg="#fcb542",   borderwidth=0, command=lambda: multi_user_input())
         Multi_Button.place(x=220, y=200) 
-        Simulation_Button = Button(top, text="SIMULATION",font=("Papyrus",40,"italic"), fg="black", bg="#74c0e3",   borderwidth=0)
+        Simulation_Button = Button(top, text="SIMULATION",font=("Papyrus",40,"italic"), fg="black", bg="#74c0e3",   borderwidth=0, command=lambda: simulation())
         Simulation_Button.place(x=240, y=300) 
         Quit_Button = Button(top, text="QUIT",font=("Papyrus",40,"italic"), fg="black", bg="#fc4176",   borderwidth=0, command=on_exit)
         Quit_Button.place(x=300, y=400) 
@@ -656,6 +682,25 @@ class Ludo:
 
         def go_back(top):
             top.destroy()
+        def check_digit(input):
+                    if input.isdigit():
+                        if (int(input) > 2 and int(input) <= 100):
+                            return True
+                    else:
+                        messagebox.showerror("Input Error", "Please enter age between 3 and 100")
+                        return False
+        def check_alphanumeric(input):
+                    if input.isalnum():
+                        return True
+                    else:
+                        messagebox.showerror("Input Error", "Please enter a valid username")
+                        return False
+        def check_string(input):
+                    if input.isdigit():
+                        return True
+                    else:
+                        messagebox.showerror("Input Error", "Please input number of players between 2 and 4")
+                        return False
         
         def user_input(top):
         # top.destsroy()
@@ -665,14 +710,19 @@ class Ludo:
             top2.title("Ludo Master")
             path="Images/screen3.png" 
             image = (Image.open(path))
+            age_validation = top2.register(check_digit)
+            username_validation = top2.register(check_alphanumeric)
+            string_validation = top2.register(check_string)
             resized_image= image.resize((800,500), Image.ANTIALIAS)
             new_image= ImageTk.PhotoImage(resized_image)
             label = tk.Label(top2, image = new_image, compound=tk.CENTER, bg="black", width=800, height=650).pack()
             top2.update()
             usernameLabel = Label(top2, text="Username", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=200, y=100)
-            usernameEntry = Entry(top2).place(x=350, y=100)
+            usernameEntry = Entry(top2 , validatecommand=(username_validation,'%P'), validate="focus")
+            usernameEntry.place(x=350, y=100)
             ageLabel = Label(top2, text="Age", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=200, y=170)
-            ageEntry = Entry(top2).place(x=350, y=170)
+            ageEntry = Entry(top2, validatecommand=(age_validation,'%P'), validate="focus")
+            ageEntry.place(x=350, y=170)
             country = StringVar(top2)
             countryLabel = Label(top2, text="Country", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=200, y=240)
             country.set("None") # default value
@@ -682,7 +732,80 @@ class Ludo:
             PLAY_BUTTON = Button(top2, text="PLAY",font=("Papyrus",40,"italic"), fg="black", bg="#ade374",   borderwidth=0, command=lambda: operate(1, top2) )
             PLAY_BUTTON.place(x=320, y=500) 
 
+        def simulation():
+            global numPlayersSim
+            numPlayersSim = randint(2, 4)
+            df = pd.read_csv("userdetails.csv")
+            if numPlayersSim == 2:
+                b1 = randint(1, len(df)//2)
+                b2 = randint(len(df)//2, len(df))
+                Ludo.usernames.append(df["username"].iloc[b1])
+                Ludo.usernames.append(df["username"].iloc[b2])
+            elif numPlayersSim == 3:
+                b1 = randint(1, len(df)//6)
+                b2 = randint(len(df)//6, len(df)//3)
+                b3 = randint(len(df)//3, len(df))
+                Ludo.usernames.append(df["username"].iloc[b1])
+                Ludo.usernames.append(df["username"].iloc[b2])
+                Ludo.usernames.append(df["username"].iloc[b3])
+            elif numPlayersSim == 4:
+                b1 = randint(1, len(df)//6)
+                b2 = randint(len(df)//8, len(df)//6)
+                b3 = randint(len(df)//6, len(df)//4)
+                b4 = randint(len(df)//4, len(df)//2)
+                b4 = randint(len(df)//2, len(df))
+                Ludo.usernames.append(df["username"].iloc[b1])
+                Ludo.usernames.append(df["username"].iloc[b2])
+                Ludo.usernames.append(df["username"].iloc[b3])
+                Ludo.usernames.append(df["username"].iloc[b4])
+            top.destroy()
+
+            simulation_aftercontrol()
+        
+        def simulation_aftercontrol():
+            for player_index in range(int(numPlayersSim)):
+                self.total_people_play.append(player_index)
+                print(self.total_people_play)
+                self.make_command()
+                top.destroy()
+            if numPlayersSim == 2:
+                while Ludo.gameover:
+                    # operate(1, top)
+                    self.make_prediction("#fc4176")
+                    self.make_prediction("#74c0e3")
+            elif numPlayersSim == 3:
+                while Ludo.gameover:
+                # operate(1, top)
+                    self.make_prediction("#fc4176")
+                    self.make_prediction("#74c0e3")
+                    self.make_prediction("#fcb542")
+            elif numPlayersSim == 4:
+                while Ludo.gameover:
+                    # operat e(1, top)
+                    self.make_prediction("#fc4176")
+                    self.make_prediction("#74c0e3")
+                    self.make_prediction("#fcb542")
+                    self.make_prediction("#ade374")
+            #         Ludo.predict_red.invoke()
+                #         Ludo.predict_blue.invoke()
+                # elif numPlayersSim == 3:
+                #     while not Ludo.destination_reached:
+                #         Ludo.predict_red.invoke()
+                #         Ludo.predict_blue.invoke()
+                #         Ludo.predict_green.invoke()
+                # elif numPlayersSim == 4:
+                #     while not Ludo.destination_reached:
+                #         Ludo.predict_red.invoke()
+                #         Ludo.predict_blue.invoke()
+                #         Ludo.predict_green.invoke()
+                #         Ludo.predict_yellow.invoke()
+                
+
+                    
+                    
+
         def multi_user_input():
+                top.destroy()
                 top3 = Toplevel(background="black")
                 x, y = Ludo.centerWindow(800, 650, top3)
                 top3.geometry(f"800x650+{x}+{y}")
@@ -690,68 +813,121 @@ class Ludo:
                 new_image= ImageTk.PhotoImage(resized_image)
                 label = tk.Label(top3, compound=tk.CENTER, bg="black", width=800, height=650).pack()
                 top3.update()
-
+                age_validation = top3.register(check_digit)
+                username_validation = top3.register(check_alphanumeric)
+                string_validation = top3.register(check_string)
                 numberPlayersLabel = Label(top3, text="Number of Players", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=200, y=50)
+                global numberPlayersText
                 numberPlayersText = Entry(top3, width = 5)
                 numberPlayersText.place(x=400, y=50)
                 Submit_Button = Button(top3, text="SUBMIT",width = 200, height = 30, font=("Papyrus",15,"italic"), fg="black", bg="#ade374",   borderwidth=0, command=lambda: filtering())
                 Submit_Button.place(x=500, y=50) 
+                
+
+                def sel(var):
+                    selection = str(var.get())
 
 
                 # PLAY_BUTTON = Button(top3, text="PLAY",font=("Papyrus",40,"italic"), fg="black", bg="#ade374",   borderwidth=0, command=lambda: filtering() )
-                # PLAY_BUTTON.place(x=320, y=600) 
-
+                # PLAY_BUTTON.place(x=320, y=600s
                 def player1():
-                    # player 1 information
-                    usernameLabel = Label(top3, text="Username", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=50, y=150)
-                    usernameEntry = Entry(top3).place(x=200, y=150)
-                    ageLabel = Label(top3, text="Age", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=50, y=200)
-                    ageEntry = Entry(top3).place(x=200, y=200)
-                    country = StringVar(top3)
-                    countryLabel = Label(top3, text="Country", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=50, y=250)
-                    country.set("None") # default value
-                    opt = Ludo.options
-                    w = OptionMenu(top3, country, *opt)
-                    w.place(x = 200, y = 250)
-
+                    usernameLabel1 = Label(top3, text="Username", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black")
+                    usernameLabel1.place(x=50, y=150)
+                    global usernameEntry1 
+                    usernameEntry1 = Entry(top3, validatecommand=(username_validation,'%P'), validate="focus")
+                    usernameEntry1.place(x=180, y=150)
+                    ageLabel1 = Label(top3, text="Age", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=50, y=200)
+                    global ageEntry1
+                    ageEntry1 = Entry(top3, validatecommand=(age_validation,'%P'), validate="focus")
+                    ageEntry1.place(x=180, y=200)
+                    global country1
+                    country1 = StringVar(top3)
+                    countryLabel1 = Label(top3, text="Country", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=50, y=250)
+                    country1.set("None") # default value
+                    opt1 = Ludo.options
+                    w1 = OptionMenu(top3, country1, *opt1)
+                    w1.place(x = 180, y = 250)
+                    global gender1
+                    gender1 = StringVar(top3)
+                    genderLabel1 = Label(top3, text="Gender", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=50, y=300)
+                    R11 = Radiobutton(top3, text="Female", font=("Papyrus", 13, "bold"), bg="#fc4176", fg="black", variable=gender1, value="female").place(x=180, y=300)
+                    R21 = Radiobutton(top3, text="Male", font=("Papyrus", 13, "bold"), bg="#fc4176", fg="black", variable=gender1, value="male").place(x=260, y=300)
+                    R31 = Radiobutton(top3, text="Other", font=("Papyrus", 13, "bold"), bg="#fc4176", fg="black", variable=gender1, value="other").place(x=340, y=300)
+                    
+                                        
                 def player2():
                     # player 2 information
-                    usernameLabel2 = Label(top3, text="Username", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=50, y=400)
-                    usernameEntry2 = Entry(top3).place(x=200, y=400)
-                    ageLabel2 = Label(top3, text="Age", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=50, y=450)
-                    ageEntry2 = Entry(top3).place(x=200, y=450)
+                    usernameLabel2 = Label(top3, text="Username", font=("Papyrus", 20, "bold"), bg="#74c0e3", fg="black").place(x=50, y=400)
+                    global usernameEntry2
+                    usernameEntry2 = Entry(top3, validatecommand=(username_validation,'%P'), validate="focus")
+                    usernameEntry2.place(x=180, y=400)
+                    ageLabel2 = Label(top3, text="Age", font=("Papyrus", 20, "bold"), bg="#74c0e3", fg="black").place(x=50, y=450)
+                    global ageEntry2
+                    ageEntry2 = Entry(top3, validatecommand=(age_validation,'%P'), validate="focus")
+                    ageEntry2.place(x=180, y=450)
+                    global country2
+                    global gender2
                     country2 = StringVar(top3)
-                    countryLabel2 = Label(top3, text="Country", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=50, y=500)
+                    countryLabel2 = Label(top3, text="Country", font=("Papyrus", 20, "bold"), bg="#74c0e3", fg="black").place(x=50, y=500)
                     country2.set("None") # default value
                     opt = Ludo.options
                     w2 = OptionMenu(top3, country2, *opt)
-                    w2.place(x = 200, y = 500)
+                    w2.place(x = 180, y = 500)
+                    gender2 = StringVar(top3)
+                    genderLabel2 = Label(top3, text="Gender", font=("Papyrus", 20, "bold"), bg="#74c0e3", fg="black").place(x=50, y=550)
+                    R12 = Radiobutton(top3, text="Female", font=("Papyrus", 13, "bold"), bg="#74c0e3", fg="black", variable=gender2, value="female").place(x=180, y=550)
+                    R22 = Radiobutton(top3, text="Male", font=("Papyrus", 13, "bold"), bg="#74c0e3", fg="black", variable=gender2, value="male").place(x=260, y=550)
+                    R32 = Radiobutton(top3, text="Other", font=("Papyrus", 13, "bold"), bg="#74c0e3", fg="black", variable=gender2, value="other").place(x=340, y=550)
                 
                 def player3():
                     # player 3 information
-                    usernameLabel3 = Label(top3, text="Username", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=400, y=150)
-                    usernameEntry3 = Entry(top3).place(x=550, y=150)
-                    ageLabel3 = Label(top3, text="Age", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=400, y=200)
-                    ageEntry3 = Entry(top3).place(x=550, y=200)
+                    usernameLabel3 = Label(top3, text="Username", font=("Papyrus", 20, "bold"), bg="#fcb542", fg="black").place(x=430, y=150)
+                    global usernameEntry3
+                    usernameEntry3 = Entry(top3, validatecommand=(username_validation,'%P'), validate="focus")
+                    usernameEntry3.place(x=560, y=150)
+                    ageLabel3 = Label(top3, text="Age", font=("Papyrus", 20, "bold"), bg="#fcb542", fg="black").place(x=430, y=200)
+                    global ageEntry3
+                    global country3
+                    global gender3
+                    ageEntry3 = Entry(top3, validatecommand=(age_validation,'%P'), validate="focus")
+                    ageEntry3.place(x=560, y=200)
                     country3 = StringVar(top3)
-                    countryLabel3 = Label(top3, text="Country", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=400, y=250)
+                    countryLabel3 = Label(top3, text="Country", font=("Papyrus", 20, "bold"), bg="#fcb542", fg="black").place(x=430, y=250)
                     country3.set("None") # default value
                     opt = Ludo.options
-                    w3 = OptionMenu(top3, country3, *opt)
-                    w3.place(x = 550, y = 250)
+                    w3 = OptionMenu(top3,country3, *opt)
+                    w3.place(x = 560, y = 250)
+                    gender3 = StringVar(top3)
+                    genderLabel3 = Label(top3, text="Gender", font=("Papyrus", 20, "bold"), bg="#fcb542", fg="black").place(x=430, y=300)
+                    R13 = Radiobutton(top3, text="Female", font=("Papyrus", 13, "bold"), bg="#fcb542", fg="black", variable=gender3, value="female").place(x=550, y=300)
+                    R23 = Radiobutton(top3, text="Male", font=("Papyrus", 13, "bold"), bg="#fcb542", fg="black", variable=gender3, value="male").place(x=630, y=300)
+                    R33 = Radiobutton(top3, text="Other", font=("Papyrus", 13, "bold"), bg="#fcb542", fg="black", variable=gender3, value="other").place(x=700, y=300)
 
                 def player4():
                     # player 4 information
-                    usernameLabel4 = Label(top3, text="Username", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=400, y=400)
-                    usernameEntry4 = Entry(top3).place(x=550, y=400)
-                    ageLabel4 = Label(top3, text="Age", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=400, y=450)
-                    ageEntry4 = Entry(top3).place(x=550, y=450)
+                    usernameLabel4 = Label(top3, text="Username", font=("Papyrus", 20, "bold"), bg="#ade374", fg="black").place(x=430, y=400)
+                    global usernameEntry4
+                    usernameEntry4 = Entry(top3, validatecommand=(username_validation,'%P'), validate="focus")
+                    usernameEntry4.place(x=560, y=400)
+                    ageLabel4 = Label(top3, text="Age", font=("Papyrus", 20, "bold"), bg="#ade374", fg="black").place(x=430, y=450)
+                    global ageEntry4
+                    global country4
+                    ageEntry4 = Entry(top3, validatecommand=(age_validation,'%P'), validate="focus")
+                    ageEntry4.place(x=560, y=450)
                     country4 = StringVar(top3)
-                    countryLabel4 = Label(top3, text="Country", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black").place(x=400, y=500)
+                    countryLabel4 = Label(top3, text="Country", font=("Papyrus", 20, "bold"), bg="#ade374", fg="black").place(x=430, y=500)
                     country4.set("None") # default value
+                    global countryOption4   
+                    countryOption4 = StringVar()
                     opt = Ludo.options
                     w4 = OptionMenu(top3, country4, *opt)
-                    w4.place(x = 550, y = 500)
+                    w4.place(x = 560, y = 500)
+                    global gender4
+                    gender4 = StringVar(top3)
+                    genderLabel4 = Label(top3, text="Gender", font=("Papyrus", 20, "bold"), bg="#ade374", fg="black").place(x=430, y=550)
+                    R14 = Radiobutton(top3, text="Female", font=("Papyrus", 13, "bold"), bg="#ade374", fg="black", variable=gender4, value="female").place(x=550, y=550)
+                    R24 = Radiobutton(top3, text="Male", font=("Papyrus", 13, "bold"), bg="#ade374", fg="black", variable=gender4, value="male").place(x=630, y=550)
+                    R34 = Radiobutton(top3, text="Other", font=("Papyrus", 13, "bold"), bg="#ade374", fg="black", variable=gender4, value="other").place(x=700, y=550)
 
                 def filtering():# Total player input value filtering
                     def input_filtering(coin_number):# Input value Filtering
@@ -759,48 +935,114 @@ class Ludo:
                             return True if (4>=int(coin_number)>=2) or type(coin_number) == int else False
                         except:
                             return False
-
+                    response_take_int = int(numberPlayersText.get())
                     response_take = input_filtering(numberPlayersText.get())
-                    response_take_int = numberPlayersText.get()
-                    print(response_take_int)
-                    if (response_take_int == 2):
+                    if (response_take_int == int(2)): 
                         player1()
                         player2()
-                    elif (response_take_int==3):
+                        Submit_Button['state'] = DISABLED
+                        PLAY_BUTTON = Button(top3, text="PLAY",font=("Papyrus",40,"italic"), fg="black", bg="#ade374",   borderwidth=0, command=lambda: check_players(response_take_int, response_take) )
+                        PLAY_BUTTON.place(x=320, y=600)
+                    elif (response_take_int == 3):
                         player1()
                         player2()
                         player3()
-                    elif (response_take_int==4):
+                        Submit_Button['state'] = DISABLED
+                        PLAY_BUTTON = Button(top3, text="PLAY",font=("Papyrus",40,"italic"), fg="black", bg="#ade374",   borderwidth=0, command=lambda: check_players(response_take_int, response_take) )
+                        PLAY_BUTTON.place(x=320, y=600)
+                    elif(response_take_int == 4):
                         player1()
                         player2()
                         player3()
                         player4()
+                        Submit_Button['state'] = DISABLED
+                        PLAY_BUTTON = Button(top3, text="PLAY",font=("Papyrus",40,"italic"), fg="black", bg="#ade374",   borderwidth=0, command=lambda: check_players(response_take_int, response_take) )
+                        PLAY_BUTTON.place(x=320, y=600) 
                     else:
                         messagebox.showerror("Input Error", "Please input number of players between 2 and 4")
-                        top3.destroy()
-                        top.destroy()
-                        # self.take_initial_control()
+                        # top3.destroy()
+                        # top.destroy()
+                        # # self.take_initial_control()
+                    
+                def check_players(response_take_int, response_take):
+                        if response_take_int == 2:
+                            user1 = [str(usernameEntry1.get()), str(ageEntry1.get()), str(country1.get()), str(gender1.get())]
+                            user2 = [str(usernameEntry2.get()), str(ageEntry2.get()), str(country2.get()), str(gender2.get())]
+                            with open('userdetails.csv','a') as f:
+                                writer = csv.writer(f)
+                                writer.writerow(user1)
+                                writer.writerow(user2)
 
-                    if response_take:
-                        for player_index in range(int(numberPlayersText.get())):
-                            self.total_people_play.append(player_index)
-                        print(self.total_people_play)
-                        self.make_command()
-                        top3.destroy()
-                        top.destroy()
-                    else:
-                        messagebox.showerror("Input Error", "Please input number of players between 2 and 4")
-                        top3.destroy()
-                        top.destroy()
-                        self.take_initial_control()
+                        elif response_take_int == 3:
+                            user1 = [str(usernameEntry1.get()), str(ageEntry1.get()), str(country1.get()), str(gender1.get())]
+                            user2 = [str(usernameEntry2.get()), str(ageEntry2.get()), str(country2.get()), str(gender2.get())]
+                            user3 = [str(usernameEntry3.get()), str(ageEntry3.get()), str(country3.get()), str(gender3.get())]
 
-        # submit_btn = Bsutton(top,text="Submit",bg="#262626",fg="#ade374",font=("Papyrus",13),relief=RAISED,bd=3,command=filtering,state=DISABLED)
-        # submit_btn.place(x=330,y=87)
+                            with open('userdetails.csv','a') as f:
+                                writer = csv.writer(f)
+                                writer.writerow(user1)
+                                writer.writerow(user2)
+                                writer.writerow(user3)
+                            
+                        else:
+                            user1 = [str(usernameEntry1.get()), str(ageEntry1.get()), str(country1.get()), str(gender1.get())]
+                            user2 = [str(usernameEntry2.get()), str(ageEntry2.get()), str(country2.get()), str(gender2.get())]
+                            user3 = [str(usernameEntry3.get()), str(ageEntry3.get()), str(country3.get()), str(gender3.get())]
+                            user4 = [str(usernameEntry4.get()), str(ageEntry4.get()), str(country4.get()), str(gender4.get())]
 
+                            with open('userdetails.csv','a') as f:
+                                writer = csv.writer(f)
+                                writer.writerow(user1)
+                                writer.writerow(user2)
+                                writer.writerow(user3)
+                                writer.writerow(user4)
+                        if response_take:
+                            for player_index in range(0, int(numberPlayersText.get())):
+                                self.total_people_play.append(player_index)
+                            # print(self.total_people_play)
+                            self.make_command()
+                            top3.destroy()
+                            top.destroy()
+                        else:
+                            messagebox.showerror("Input Error", "Please input number of players between 2 and 4")
+                            top3.destroy()
+                            top.destroy()
+                            self.take_initial_control()
+                        # top3.destroy()
+                        # top.destroy()
+                        
+
+                        # Ludo.usernames.append(str(usernameEntry1.get()))
+                        # Ludo.usernames.append(str(usernameEntry2.get()))
+                        # Ludo.usernames.append(str(usernameEntry3.get()))
+                        # Ludo.usernames.append(str(usernameEntry4.get()))
+
+                        # Ludo.ages.append(str(ageEntry1.get()))
+                        # Ludo.ages.append(str(ageEntry2.get()))
+                        # Ludo.ages.append(str(ageEntry3.get()))
+                        # Ludo.ages.append(str(ageEntry4.get()))
+
+                        # Ludo.countries.append(str(country1.get()))
+                        # Ludo.countries.append(str(country2.get()))
+                        # Ludo.countries.append(str(country3.get()))
+                        # Ludo.countries.append(str(country4.get()))
+
+                        # Ludo.genders.append(str(gender1.get()))
+                        # Ludo.genders.append(str(gender2.get()))
+                        # Ludo.genders.append(str(gender3.get()))
+                        # Ludo.genders.append(str(gender4.get()))
+
+                    
+                    # df1 = df1.append(pd.DataFrame(xtra, columns=['col1']), ignore_index=True)
+                    # print(Ludo.usernames)
+                    # print(Ludo.countries)
+                    # print(Ludo.ages)
+                    # print(Ludo.genders)
+                    
+             
+                   
         def operate(ind, top2):
             top2.destroy()
-
-            # top.destroy()
             top1 = Toplevel(background="black")
             top1.grab_set()
 
@@ -857,20 +1099,21 @@ class Ludo:
             else:
                 submit_btn['state'] = NORMAL
                 take_entry['state'] = NORMAL
-        
-        # mvc_btn = Button(top,text="Play With Computer",bg="#262626",fg="#ade374",font=("Papyrus",15),relief=RAISED,bd=3,command=lambda: operate(1), activebackground="#262626")
-        # mvc_btn.place(x=30,y=160)
-
-        # mvh_btn = Button(top,text="Play With Friends",bg="#262626",fg="#ade374",font=("Papyrus",15),relief=RAISED,bd=3,command=lambda: operate(0), activebackground="#262626")
-        # mvh_btn.place(x=260,y=160)
 
             top.mainloop()
 
     # Get block value after prediction based on probability
     def make_prediction(self,color_indicator):
+        print("face ids")
+        print(*Ludo.dice_face, sep = " ")
+        print("toll idds")
+        
+
+        print(*Ludo.roll_id, sep = " ")
         try:
-            if color_indicator == "#fc4176":
+            if color_indicator == "#fc4176":                
                 block_value_predict = self.block_value_predict[0]
+                # print("ello"+str(block_value_predict))
                 if self.robo_prem and self.count_robo_stage_from_start < 3:
                     self.count_robo_stage_from_start += 1
                 if self.robo_prem and self.count_robo_stage_from_start == 3 and self.six_counter < 2:
@@ -878,23 +1121,147 @@ class Ludo:
                     self.count_robo_stage_from_start += 1
                 else:    
                     permanent_block_number = self.move_red_counter = randint(1, 6)
-
+                if permanent_block_number == 6:
+                    a = randint(1,4)
+                    Ludo.tmp_red.append(a)
+                    print(a)
+                    if a == 1:
+                        self.main_controller("#fc4176",'1')
+                    elif a == 2:
+                        self.main_controller("#fc4176",'2')
+                    elif a == 3:
+                        self.main_controller("#fc4176",'3')
+                    elif a == 4:
+                        self.main_controller("#fc4176",'4')  
+                    self.make_prediction("#fc4176")       
+                else:
+                    if Ludo.tmp_red:
+                        a = int(random.choice(Ludo.tmp_red))
+                        if a == 1:
+                            self.main_controller("#fc4176",'1')
+                        elif a == 2:
+                            self.main_controller("#fc4176",'2')
+                        elif a == 3:
+                            self.main_controller("#fc4176",'3')
+                        elif a == 4:
+                            self.main_controller("#fc4176",'4')         
+                if permanent_block_number == 6:
+                    # self.make_prediction("#fc4176")
+                    a = Ludo.roll_id[-1]
+                    if a == 6:
+                        Ludo.roll = Ludo.roll
+                        Ludo.roll_id.append(Ludo.roll)
+                        Ludo.username_id.append(Ludo.usernames[0])
+                        Ludo.dice_face.append(permanent_block_number)
+                    else:
+                        Ludo.roll = Ludo.roll
+                        Ludo.roll_id.append(Ludo.roll)
+                        Ludo.username_id.append(Ludo.usernames[0])
+                        Ludo.dice_face.append(permanent_block_number)
+                        # Ludo.roll = Ludo.roll-1
+                else:
+                    Ludo.roll = Ludo.roll+1
+                    Ludo.roll_id.append(Ludo.roll)
+                    Ludo.username_id.append(Ludo.usernames[0])
+                    Ludo.dice_face.append(permanent_block_number)
+                    
+                    # print(str(Ludo.roll) + "red")
             elif color_indicator == "#74c0e3":
                 block_value_predict = self.block_value_predict[1]
                 permanent_block_number = self.move_sky_blue_counter = randint(1, 6)
+                if permanent_block_number == 6:
+                    a = randint(1,4)
+                    Ludo.tmp_blue.append(a)
+                    if a == 1:
+                        self.main_controller("#74c0e3",'1')
+                    elif a == 2:
+                        self.main_controller("#74c0e3",'2')
+                    elif a == 3:
+                        self.main_controller("#74c0e3",'3')
+                    elif a == 4:
+                        self.main_controller("#74c0e3",'4')  
+                    self.make_prediction("#74c0e3")            
+                else:
+                     if Ludo.tmp_blue:
+                        a = int(random.choice(Ludo.tmp_blue))
+                        if a == 1:
+                            self.main_controller("#74c0e3",'1')
+                        elif a == 2:
+                            self.main_controller("#74c0e3",'2')
+                        elif a == 3:
+                            self.main_controller("#74c0e3",'3')
+                        elif a == 4:
+                            self.main_controller("#74c0e3",'4')    
+                Ludo.roll_id.append(Ludo.roll)
+                Ludo.username_id.append(Ludo.usernames[1])
+                Ludo.dice_face.append(permanent_block_number)
+                # print(*Ludo.roll_id, sep = "\n")
                 if self.robo_prem and permanent_block_number == 6:
                     for coin_loc in self.red_coin_position:
                         if coin_loc>=40 and coin_loc<=46:
-                            permanent_block_number = self.move_sky_blue_counter = randint(1, 5)
+                            permanent_block_number = self.move_sky_blue_counter = randint(1, 5)                        
                             break
                             
             elif color_indicator == "#fcb542":
                 block_value_predict = self.block_value_predict[2]
                 permanent_block_number = self.move_yellow_counter = randint(1, 6)
+                if permanent_block_number == 6:
+                    # self.make_prediction("#fcb542")
+                    a = randint(1,4)
+                    Ludo.tmp_yellow.append(a)
+                    if a == 1:
+                        self.main_controller("#fcb542",'1')
+                    elif a == 2:
+                        self.main_controller("#fcb542",'2')
+                    elif a == 3:
+                        self.main_controller("#fcb542",'3')
+                    elif a == 4:
+                        self.main_controller("#fcb542",'4') 
+                    self.make_prediction("#fcb542")             
+                else:
+                     if Ludo.tmp_yellow:
+                        a = int(random.choice(Ludo.tmp_yellow))
+                        if a == 1:
+                            self.main_controller("#fcb542",'1')
+                        elif a == 2:
+                            self.main_controller("#fcb542",'2')
+                        elif a == 3:
+                            self.main_controller("#fcb542",'3')
+                        elif a == 4:
+                            self.main_controller("#fcb542",'4')    
+                Ludo.roll_id.append(Ludo.roll)
+                Ludo.username_id.append(Ludo.usernames[2])
+                Ludo.dice_face.append(permanent_block_number)
 
-            else:
+            elif color_indicator == "#ade374":
                 block_value_predict = self.block_value_predict[3]
                 permanent_block_number = self.move_green_counter = randint(1, 6)
+                if permanent_block_number == 6:
+                    a = randint(1,4)
+                    Ludo.tmp_green.append(a)
+                    if a == 1:
+                        self.main_controller("#ade374",'1')
+                    elif a == 2:
+                        self.main_controller("#ade374",'2')
+                    elif a == 3:
+                        self.main_controller("#ade374",'3')
+                    elif a == 4:
+                        self.main_controller("#ade374",'4')  
+                    self.make_prediction("#ade374")            
+                else:
+                    if Ludo.tmp_green:
+                        a = int(random.choice(Ludo.tmp_green))
+                        if a == 1:
+                            self.main_controller("#ade374",'1')
+                        elif a == 2:
+                            self.main_controller("#ade374",'2')
+                        elif a == 3:
+                            self.main_controller("#ade374",'3')
+                        elif a == 4:
+                            self.main_controller("#ade374",'4')    
+                Ludo.roll_id.append(Ludo.roll)
+                Ludo.username_id.append(Ludo.usernames[3])
+                Ludo.dice_face.append(permanent_block_number)
 
             block_value_predict[1]['state'] = DISABLED
 
@@ -904,10 +1271,12 @@ class Ludo:
                 move_temp_counter = randint(1, 6)
                 block_value_predict[0]['image'] = self.block_number_side[move_temp_counter - 1]
                 self.window.update()
-                time.sleep(0.1)
+                time.sleep(0.001)
                 temp_counter-=1
 
-            print("Prediction result: ", permanent_block_number)
+            # print("P / .rediction result: ", permanent_block_number)
+            # Ludo.dice_face.append(permanent_block_number)
+            # df['username']
 
             # Permanent predicted value containing image set
             block_value_predict[0]['image'] = self.block_number_side[permanent_block_number-1]
@@ -915,8 +1284,9 @@ class Ludo:
                 self.window.update()
                 time.sleep(0.4)
             self.instructional_btn_customization_based_on_current_situation(color_indicator,permanent_block_number,block_value_predict)
-        except:
-            print("Force Stop Error in Prediction")
+        except Exception:
+                traceback.print_exc()
+            # print("Force Stop Error in Prediction")
         
     def instructional_btn_customization_based_on_current_situation(self,color_indicator,permanent_block_number,block_value_predict):
         robo_operator = None
@@ -1025,19 +1395,23 @@ class Ludo:
     def instruction_btn_red(self):
         block_predict_red = Label(self.make_canvas,image=self.block_number_side[0])
         block_predict_red.place(x=30,y=15)
-        predict_red = Button(self.make_canvas, height= 20, width=50, bg="#fc4176", fg="black", relief=RAISED, bd=1, text="Roll", font=("Papyrus", 10, "bold"), command=lambda: self.make_prediction("#fc4176"))
+        predict_red = Button(self.make_canvas, height= 20, width=50, bg="#fc4176", fg="black", relief=RAISED, bd=1, text="Roll",font=("Papyrus", 10, "bold"), command=lambda: self.make_prediction("#fc4176"))
         predict_red.place(x=20, y=15 + 50)
-        btn_1 = Button(self.make_canvas,height= 20, width=20, bg="#fc4176",fg="black",text="1",font=("Papyrus",13,"bold"), relief=RAISED, bd=1,command=lambda: self.main_controller("#fc4176",'1'), state=DISABLED, disabledforeground="black")
-        btn_1.place(x=20,y=15+100)
-        btn_2 = Button(self.make_canvas,height= 20, width=20, bg="#fc4176",fg="black",text="2",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#fc4176",'2'), state=DISABLED, disabledforeground="black")
-        btn_2.place(x=50,y=15+100)
-        btn_3 = Button(self.make_canvas,height= 20, width=20, bg="#fc4176",fg="black",text="3",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#fc4176",'3'), state=DISABLED, disabledforeground="black")
-        btn_3.place(x=20,y=15+100+40)
-        btn_4 = Button(self.make_canvas,height= 20, width=20, bg="#fc4176",fg="black",text="4",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#fc4176",'4'), state=DISABLED, disabledforeground="black")
-        btn_4.place(x=50,y=15+100+40)
+        global red_btn_1
+        global red_btn_2
+        global red_btn_3
+        global red_btn_4
+        red_btn_1 = Button(self.make_canvas,height= 20, width=20, bg="#fc4176",fg="black",text="1",font=("Papyrus",13,"bold"), relief=RAISED, bd=1,command=lambda: self.main_controller("#fc4176",'1'), state=DISABLED, disabledforeground="black")
+        red_btn_1.place(x=20,y=15+100)
+        red_btn_2 = Button(self.make_canvas,height= 20, width=20, bg="#fc4176",fg="black",text="2",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#fc4176",'2'), state=DISABLED, disabledforeground="black")
+        red_btn_2.place(x=50,y=15+100)
+        red_btn_3 = Button(self.make_canvas,height= 20, width=20, bg="#fc4176",fg="black",text="3",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#fc4176",'3'), state=DISABLED, disabledforeground="black")
+        red_btn_3.place(x=20,y=15+100+40)
+        red_btn_4 = Button(self.make_canvas,height= 20, width=20, bg="#fc4176",fg="black",text="4",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#fc4176",'4'), state=DISABLED, disabledforeground="black")
+        red_btn_4.place(x=50,y=15+100+40)
 
-        Label(self.make_canvas,text="Player 1",bg="black",fg="#fc4176",font=("Papyrus",15)).place(x=15,y=15+140+50)
-        self.store_instructional_btn(block_predict_red,predict_red,[btn_1,btn_2,btn_3,btn_4])
+        Label(self.make_canvas,text=" Player 1",bg="black",fg="#fc4176",font=("Papyrus",15)).place(x=15,y=15+140+50)
+        self.store_instructional_btn(block_predict_red,predict_red,[red_btn_1,red_btn_2,red_btn_3,red_btn_4])
 
     def instruction_btn_sky_blue(self):
         block_predict_sky_blue = Label(self.make_canvas, image=self.block_number_side[0])
@@ -1045,53 +1419,70 @@ class Ludo:
         predict_sky_blue = Button(self.make_canvas, height= 20, width=50, bg="#74c0e3", fg="black", relief=RAISED, bd=1, text="Roll",font=("Papyrus", 10, "bold"), command=lambda: self.make_prediction("#74c0e3"))
         predict_sky_blue.place(x=20, y=15+(40*6+40*3)+40 + 20)
 
-        btn_1 = Button(self.make_canvas,height= 20, width=20, bg="#74c0e3",fg="black",text="1",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#74c0e3",'1'), state=DISABLED, disabledforeground="black")
-        btn_1.place(x=20,y=15+(40*6+40*3)+40 + 70)
-        btn_2 = Button(self.make_canvas,height= 20, width=20, bg="#74c0e3",fg="black",text="2",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#74c0e3",'2'), state=DISABLED, disabledforeground="black")
-        btn_2.place(x=60,y=15+(40*6+40*3)+40 + 70)
-        btn_3 = Button(self.make_canvas,height= 20, width=20, bg="#74c0e3",fg="black",text="3",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#74c0e3",'3'), state=DISABLED, disabledforeground="black")
-        btn_3.place(x=20,y=15+(40*6+40*3)+40 + 70+ 40)
-        btn_4 = Button(self.make_canvas,height= 20, width=20, bg="#74c0e3",fg="black",text="4",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#74c0e3",'4'), state=DISABLED, disabledforeground="black")
-        btn_4.place(x=60,y=15+(40*6+40*3)+40 + 70+ 40)
+        global blue_btn_1
+        global blue_btn_2
+        global blue_btn_3
+        global blue_btn_4
+
+        blue_btn_1 = Button(self.make_canvas,height= 20, width=20, bg="#74c0e3",fg="black",text="1",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#74c0e3",'1'), state=DISABLED, disabledforeground="black")
+        blue_btn_1.place(x=20,y=15+(40*6+40*3)+40 + 70)
+        blue_btn_2 = Button(self.make_canvas,height= 20, width=20, bg="#74c0e3",fg="black",text="2",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#74c0e3",'2'), state=DISABLED, disabledforeground="black")
+        blue_btn_2.place(x=60,y=15+(40*6+40*3)+40 + 70)
+        blue_btn_3 = Button(self.make_canvas,height= 20, width=20, bg="#74c0e3",fg="black",text="3",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#74c0e3",'3'), state=DISABLED, disabledforeground="black")
+        blue_btn_3.place(x=20,y=15+(40*6+40*3)+40 + 70+ 40)
+        blue_btn_4 = Button(self.make_canvas,height= 20, width=20, bg="#74c0e3",fg="black",text="4",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#74c0e3",'4'), state=DISABLED, disabledforeground="black")
+        blue_btn_4.place(x=60,y=15+(40*6+40*3)+40 + 70+ 40)
 
         Label(self.make_canvas, text="Player 2", bg="black", fg="#74c0e3", font=("Papyrus", 15, "bold")).place(x=12,y=15+(40*6+40*3)+40 + 110+50)
-        self.store_instructional_btn(block_predict_sky_blue, predict_sky_blue, [btn_1,btn_2,btn_3,btn_4])
+        self.store_instructional_btn(block_predict_sky_blue, predict_sky_blue, [blue_btn_1,blue_btn_2,blue_btn_3,blue_btn_4])
 
     def instruction_btn_yellow(self):
+
+        global yellow_btn_1
+        global yellow_btn_2
+        global yellow_btn_3
+        global yellow_btn_4
+
+        
         block_predict_yellow = Label(self.make_canvas, image=self.block_number_side[0])
         block_predict_yellow.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 10)+20, y=15 + (40 * 6 + 40 * 3) + 10)
         predict_yellow = Button(self.make_canvas, height= 20, width=50, bg="#fcb542", fg="black", relief=RAISED, bd=1, text="Roll",font=("Papyrus", 10, "bold"), command=lambda: self.make_prediction("#fcb542"))
         predict_yellow.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 2)+20, y=15 + (40 * 6 + 40 * 3) + 40 + 20)
         
-        btn_1 = Button(self.make_canvas,height= 20, width=20, bg="#fcb542",fg="black",text="1",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#fcb542",'1'), state=DISABLED, disabledforeground="black")
-        btn_1.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 2)+15, y=15 + (40 * 6 + 40 * 3) + 40 + 70)
-        btn_2 = Button(self.make_canvas,height= 20, width=20, bg="#fcb542",fg="black",text="2",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#fcb542",'2'), state=DISABLED, disabledforeground="black")
-        btn_2.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 2)+15 + 40, y=15 + (40 * 6 + 40 * 3) + 40 + 70)
-        btn_3 = Button(self.make_canvas,height= 20, width=20, bg="#fcb542",fg="black",text="3",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#fcb542",'3'), state=DISABLED, disabledforeground="black")
-        btn_3.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 2)+15, y=15 + (40 * 6 + 40 * 3) + 40 + 70+ 40)
-        btn_4 = Button(self.make_canvas,height= 20, width=20, bg="#fcb542",fg="black",text="4",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#fcb542",'4'), state=DISABLED, disabledforeground="black")
-        btn_4.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 2)+15 + 40, y=15 + (40 * 6 + 40 * 3) + 40 + 70+ 40)
+        yellow_btn_1 = Button(self.make_canvas,height= 20, width=20, bg="#fcb542",fg="black",text="1",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#fcb542",'1'), state=DISABLED, disabledforeground="black")
+        yellow_btn_1.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 2)+15, y=15 + (40 * 6 + 40 * 3) + 40 + 70)
+        yellow_btn_2 = Button(self.make_canvas,height= 20, width=20, bg="#fcb542",fg="black",text="2",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#fcb542",'2'), state=DISABLED, disabledforeground="black")
+        yellow_btn_2.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 2)+15 + 40, y=15 + (40 * 6 + 40 * 3) + 40 + 70)
+        yellow_btn_3 = Button(self.make_canvas,height= 20, width=20, bg="#fcb542",fg="black",text="3",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#fcb542",'3'), state=DISABLED, disabledforeground="black")
+        yellow_btn_3.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 2)+15, y=15 + (40 * 6 + 40 * 3) + 40 + 70+ 40)
+        yellow_btn_4 = Button(self.make_canvas,height= 20, width=20, bg="#fcb542",fg="black",text="4",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#fcb542",'4'), state=DISABLED, disabledforeground="black")
+        yellow_btn_4.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 2)+15 + 40, y=15 + (40 * 6 + 40 * 3) + 40 + 70+ 40)
         
         Label(self.make_canvas, text="Player 3", bg="black", fg="#fcb542", font=("Papyrus", 15, "bold")).place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 +7),y=15+(40*6+40*3)+40 + 110+50)
-        self.store_instructional_btn(block_predict_yellow, predict_yellow, [btn_1,btn_2,btn_3,btn_4])
+        self.store_instructional_btn(block_predict_yellow, predict_yellow, [yellow_btn_1,yellow_btn_2,yellow_btn_3,yellow_btn_4])
 
     def instruction_btn_green(self):
+
+        global green_btn_1
+        global green_btn_2
+        global green_btn_3
+        global green_btn_4
         block_predict_green = Label(self.make_canvas, image=self.block_number_side[0])
         block_predict_green.place(x=100+(40*6+40*3+40*6+10)+20, y=15)
         predict_green = Button(self.make_canvas, height= 20, width=50, bg="#ade374", fg="black", relief=RAISED, bd=1, text="Roll", font=("Papyrus", 10, "bold"), command=lambda: self.make_prediction("#ade374"))
         predict_green.place(x=100+(40*6+40*3+40*6+2)+20, y=15 + 50)
         
-        btn_1 = Button(self.make_canvas,height= 20, width=20, bg="#ade374",fg="black",text="1",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#ade374",'1'), state=DISABLED, disabledforeground="black")
-        btn_1.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 2)+15,y=15+100)
-        btn_2 = Button(self.make_canvas,height= 20, width=20, bg="#ade374",fg="black",text="2",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#ade374",'2'), state=DISABLED, disabledforeground="black")
-        btn_2.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 2)+15 + 40,y=15+100)
-        btn_3 = Button(self.make_canvas,height= 20, width=20, bg="#ade374",fg="black",text="3",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#ade374",'3'), state=DISABLED, disabledforeground="black")
-        btn_3.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 2)+15,y=15+100+40)
-        btn_4 = Button(self.make_canvas,height= 20, width=20, bg="#ade374",fg="black",text="4",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#ade374",'4'), state=DISABLED, disabledforeground="black")
-        btn_4.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 2)+15 + 40,y=15+100+40)
+        green_btn_1 = Button(self.make_canvas,height= 20, width=20, bg="#ade374",fg="black",text="1",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#ade374",'1'), state=DISABLED, disabledforeground="black")
+        green_btn_1.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 2)+15,y=15+100)
+        green_btn_2 = Button(self.make_canvas,height= 20, width=20, bg="#ade374",fg="black",text="2",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#ade374",'2'), state=DISABLED, disabledforeground="black")
+        green_btn_2.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 2)+15 + 40,y=15+100)
+        green_btn_3 = Button(self.make_canvas,height= 20, width=20, bg="#ade374",fg="black",text="3",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#ade374",'3'), state=DISABLED, disabledforeground="black")
+        green_btn_3.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 2)+15,y=15+100+40)
+        green_btn_4 = Button(self.make_canvas,height= 20, width=20, bg="#ade374",fg="black",text="4",font=("Papyrus",13,"bold"),relief=RAISED,bd=1,command=lambda: self.main_controller("#ade374",'4'), state=DISABLED, disabledforeground="black")
+        green_btn_4.place(x=100 + (40 * 6 + 40 * 3 + 40 * 6 + 2)+15 + 40,y=15+100+40)
         
         Label(self.make_canvas, text="Player 4", bg="black", fg="#ade374", font=("Papyrus", 15, "bold")).place(x=100+(40*6+40*3+40*6+7), y=15+140+50)
-        self.store_instructional_btn(block_predict_green, predict_green, [btn_1,btn_2,btn_3,btn_4])
+        self.store_instructional_btn(block_predict_green, predict_green, [green_btn_1,green_btn_2,green_btn_3,green_btn_4])
 
     def store_instructional_btn(self, block_indicator, predictor, entry_controller):
         temp = []
@@ -1164,6 +1555,9 @@ class Ludo:
         robo_operator = None
 
         if  color_coin == "#fc4176":
+            print("user killed")
+            print(Ludo.user_killed)
+
             self.num_btns_state_controller(self.block_value_predict[0][2], 0)
 
             if self.move_red_counter == 106:
@@ -1200,11 +1594,12 @@ class Ludo:
                 else:
                     if self.red_coin_position[int(coin_number) - 1] < 100:
                         self.coord_overlap(self.red_coin_position[int(coin_number)-1],color_coin, self.move_red_counter)
+                        
 
                 self.red_coord_store[int(coin_number)-1] = self.red_coin_position[int(coin_number)-1]
 
             else:
-                messagebox.showerror("Wrong choice","Sorry, Your coin in not permitted to travel")
+                # messagebox.showerror("Wrong choice","Sorry, Your coin in not permitted to travel")
                 self.num_btns_state_controller(self.block_value_predict[0][2])
 
                 if self.robo_prem == 1:
@@ -1219,7 +1614,8 @@ class Ludo:
             self.num_btns_state_controller(self.block_value_predict[3][2], 0)
 
             if self.move_green_counter == 106:
-                messagebox.showwarning("Destination reached","Reached at the destination")
+                pass
+                # messagebox.showwarning("Destination reached","Reached at the destination")
 
             elif self.green_coin_position[int(coin_number) - 1] == -1 and self.move_green_counter == 6:
                 self.green_circle_start_position(coin_number)
@@ -1233,9 +1629,9 @@ class Ludo:
 
 
                 if  self.green_coin_position[int(coin_number) - 1] + self.move_green_counter <= 106:
-                    self.green_coin_position[int(coin_number) - 1] = self.motion_of_coin(self.green_coin_position[int(coin_number) - 1], self.made_green_coin[int(coin_number) - 1], self.green_number_label[int(coin_number) - 1], green_start_label_x, green_start_label_y, "#ade374", self.move_green_counter)
+                    self.green_coin_position[int(coin_number) - 1] = self.motion_of_coin(self.green_coin_position[int(coin_number) - 1], self.made_green_coin[int(coin_number) - 1], self.green_number_label[int(coin_number) - 1], green_start_label_x, green_start_label_y, "green", self.move_green_counter)
                 else:
-                   messagebox.showerror("Not possible","No path available")
+                #    messagebox.showerror("Not possible","No path available")
                    self.num_btns_state_controller(self.block_value_predict[3][2])
                    return
 
@@ -1249,7 +1645,7 @@ class Ludo:
                 self.green_coord_store[int(coin_number) - 1] = self.green_coin_position[int(coin_number) - 1]
 
             else:
-                messagebox.showerror("Wrong choice", "Sorry, Your coin in not permitted to travel")
+                # messagebox.showerror("Wrong choice", "Sorry, Your coin in not permitted to travel")
                 self.num_btns_state_controller(self.block_value_predict[3][2])
                 return
 
@@ -1260,7 +1656,8 @@ class Ludo:
             self.num_btns_state_controller(self.block_value_predict[2][2], 0)
 
             if self.move_yellow_counter == 106:
-                messagebox.showwarning("Destination reached","Reached at the destination")
+                pass
+                # messagebox.showwarning("Destination reached","Reached at the destination")
 
             elif self.yellow_coin_position[int(coin_number) - 1] == -1 and self.move_yellow_counter == 6:
                 self.yellow_circle_start_position(coin_number)
@@ -1275,7 +1672,7 @@ class Ludo:
                 if  self.yellow_coin_position[int(coin_number) - 1] + self.move_yellow_counter <= 106:
                     self.yellow_coin_position[int(coin_number) - 1] = self.motion_of_coin(self.yellow_coin_position[int(coin_number) - 1], self.made_yellow_coin[int(coin_number) - 1], self.yellow_number_label[int(coin_number) - 1], yellow_start_label_x, yellow_start_label_y, "#fcb542", self.move_yellow_counter)
                 else:
-                   messagebox.showerror("Not possible","No path available")
+                #    messagebox.showerror("Not possible","No path available")
                    
                    self.num_btns_state_controller(self.block_value_predict[2][2])
                    return
@@ -1289,7 +1686,7 @@ class Ludo:
                 self.yellow_coord_store[int(coin_number) - 1] = self.yellow_coin_position[int(coin_number) - 1]
 
             else:
-                messagebox.showerror("Wrong choice", "Sorry, Your coin in not permitted to travel")
+                # messagebox.showerror("Wrong choice", "Sorry, Your coin in not permitted to travel")
                 self.num_btns_state_controller(self.block_value_predict[2][2])
                 return
 
@@ -1300,7 +1697,8 @@ class Ludo:
             self.num_btns_state_controller(self.block_value_predict[1][2], 0)   
 
             if self.move_red_counter == 106:
-                messagebox.showwarning("Destination reached","Reached at the destination")
+                pass
+                # messagebox.showwarning("Destination reached","Reached at the destination")
 
             elif self.sky_blue_coin_position[int(coin_number) - 1] == -1 and self.move_sky_blue_counter == 6:
                 self.sky_blue_circle_start_position(coin_number)
@@ -1315,7 +1713,7 @@ class Ludo:
                 if  self.sky_blue_coin_position[int(coin_number) - 1] + self.move_sky_blue_counter <= 106:
                     self.sky_blue_coin_position[int(coin_number) - 1] = self.motion_of_coin(self.sky_blue_coin_position[int(coin_number) - 1], self.made_sky_blue_coin[int(coin_number) - 1], self.sky_blue_number_label[int(coin_number) - 1], sky_blue_start_label_x, sky_blue_start_label_y, "#74c0e3", self.move_sky_blue_counter)
                 else:
-                   messagebox.showerror("Not possible","No path available")
+                #    messagebox.showerror("Not possible","No path available")
                    
                    self.num_btns_state_controller(self.block_value_predict[1][2])
                    return
@@ -1329,7 +1727,7 @@ class Ludo:
                 self.sky_blue_coord_store[int(coin_number) - 1] = self.sky_blue_coin_position[int(coin_number) - 1]
 
             else:
-                messagebox.showerror("Wrong choice", "Sorry, Your coin in not permitted to travel")
+                # messagebox.showerror("Wrong choice", "Sorry, Your coin in not permitted to travel")
                 self.num_btns_state_controller(self.block_value_predict[1][2])
                 return
 
@@ -1371,9 +1769,11 @@ class Ludo:
                     if  counter_coin == 106:
                         
                         if self.robo_prem == 1 and color_coin == "#fc4176":
-                            messagebox.showinfo("Destination reached","Hey! I am at the destination")
+                            pass
+                            # messagebox.showinfo("Destination reached","Hey! I am at the destination")
                         else:
-                            messagebox.showinfo("Destination reached","Congrats! You now at the destination")
+                            pass
+                            # messagebox.showinfo("Destination reached","Congrats! You now at the destination")
                         if path_counter == 6:
                             self.six_with_overlap = 1
                         else:
@@ -1384,7 +1784,7 @@ class Ludo:
                 path_counter -=1
                 number_label.place_forget()
 
-                print(counter_coin)
+                # print(counter_coin)
 
                 if counter_coin<=5:
                     self.make_canvas.move(specific_coin, 40, 0)
@@ -1456,8 +1856,11 @@ class Ludo:
     # For same position, previous coin deleted and set to the room
     def coord_overlap(self, counter_coin, color_coin, path_to_traverse_before_overlap):
         if  color_coin!="#fc4176":
+            Ludo.user_killed = 0 
+            
             for take_coin_number in range(len(self.red_coord_store)):
                 if  self.red_coord_store[take_coin_number] == counter_coin:
+                    Ludo.user_killed = Ludo.user_killed+1
                     if path_to_traverse_before_overlap == 6:
                         self.six_with_overlap=1
                     else:
@@ -1486,10 +1889,13 @@ class Ludo:
                         self.red_number_label[take_coin_number].place(x=100 + 40 + 10, y=15 + 40 + 100 + 5)
 
                     self.made_red_coin[take_coin_number]=remade_coin
+        Ludo.user_killed_count.append(Ludo.user_killed)
 
         if  color_coin != "#ade374":
+            Ludo.user_killed = 0 
             for take_coin_number in range(len(self.green_coord_store)):
                 if  self.green_coord_store[take_coin_number] == counter_coin:
+                    Ludo.user_killed = Ludo.user_killed+1
                     if path_to_traverse_before_overlap == 6:
                         self.six_with_overlap = 1
                     else:
@@ -1499,6 +1905,7 @@ class Ludo:
                     self.green_number_label[take_coin_number].place_forget()
                     self.green_coin_position[take_coin_number] = -1
                     self.green_coord_store[take_coin_number] = -1
+
 
                     if take_coin_number == 0:
                         remade_coin = self.make_canvas.create_oval(340+(40*3)+40, 15 + 40, 340+(40*3)+40 + 40, 15 + 40 + 40, width=3, fill="#ade374", outline="black")
@@ -1514,11 +1921,14 @@ class Ludo:
                         self.green_number_label[take_coin_number].place(x=340+(40*3) + 40 + 10, y=15 + 40 + 100 + 5)
 
                     self.made_green_coin[take_coin_number] = remade_coin
+        Ludo.user_killed_count.append(Ludo.user_killed)
 
 
         if  color_coin != "#fcb542":
+            Ludo.user_killed = 0 
             for take_coin_number in range(len(self.yellow_coord_store)):
                 if  self.yellow_coord_store[take_coin_number] == counter_coin:
+                    Ludo.user_killed = Ludo.user_killed+1
                     if path_to_traverse_before_overlap == 6:
                         self.six_with_overlap = 1
                     else:
@@ -1543,10 +1953,13 @@ class Ludo:
                         self.yellow_number_label[take_coin_number].place(x=340 + (40 * 3) + 40 + 10, y=30 + (40 * 6) + (40 * 3) + 40 + 100 + 10)
 
                     self.made_yellow_coin[take_coin_number] = remade_coin
+        Ludo.user_killed_count.append(Ludo.user_killed)
 
         if  color_coin != "#74c0e3":
+            Ludo.user_killed = 0 
             for take_coin_number in range(len(self.sky_blue_coord_store)):
                 if  self.sky_blue_coord_store[take_coin_number] == counter_coin:
+                    Ludo.user_killed = Ludo.user_killed+1
                     if path_to_traverse_before_overlap == 6:
                         self.six_with_overlap = 1
                     else:
@@ -1571,7 +1984,7 @@ class Ludo:
                         self.sky_blue_number_label[take_coin_number].place(x=100+40+10, y=30 + (40*6)+(40*3)+40+60+40+10)
 
                     self.made_sky_blue_coin[take_coin_number] = remade_coin
-
+        Ludo.user_killed_count.append(Ludo.user_killed)
 
     def under_room_traversal_control(self,specific_coin,number_label,number_label_x,number_label_y,path_counter,counter_coin,color_coin):
         if color_coin == "#fc4176" and counter_coin >= 100:
@@ -1638,6 +2051,7 @@ class Ludo:
         return counter_coin
 
     def check_winner_and_runner(self,color_coin):
+        global destination_reached
         destination_reached = 0 # Check for all specific color coins
         if color_coin == "#fc4176":
             temp_store = self.red_coord_store
@@ -1681,7 +2095,9 @@ class Ludo:
             self.total_people_play.remove(temp_delete)
 
             if len(self.total_people_play) == 1:
+                Ludo.gameover = 0
                 messagebox.showinfo("Game Over","Good bye!!!!")
+
                 self.block_value_predict[0][1]['state'] = DISABLED
                 return False
             else:
@@ -1889,6 +2305,7 @@ class Ludo:
 
 
 if __name__ == '__main__':
+    start = time.time()
     window = Tk()
     window.geometry("800x650")
     window.maxsize(800,650)
@@ -1924,3 +2341,12 @@ if __name__ == '__main__':
     block_one_side = ImageTk.PhotoImage(Image.open("Images/1_block.png").resize((33, 33), Image.ANTIALIAS))
     Ludo(window,block_six_side,block_five_side,block_four_side,block_three_side,block_two_side,block_one_side)
     window.mainloop()
+    stop = time.stop()
+    Ludo.game_id = [Ludo.game_id] * n
+    with open("gamestats.csv") as df:
+        df['roll_id'] = Ludo.roll_id
+        df['face_id'] = Ludo.dice_face
+        df['user_killed'] = Ludo.user_killed
+        df['game_id'] = Ludo.game_id
+        df['username'] = Ludo.username_id
+    print("Time" + str(stop-start))
