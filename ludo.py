@@ -34,6 +34,8 @@ class Ludo:
     user_killed = 0
     user_killed_count = []
     game_username = []
+    winner = ""
+    first_runner_up = ""
 
     options = ["Aruba",
     "Afghanistan",
@@ -1271,7 +1273,7 @@ class Ludo:
                 move_temp_counter = randint(1, 6)
                 block_value_predict[0]['image'] = self.block_number_side[move_temp_counter - 1]
                 self.window.update()
-                time.sleep(0.001)
+                time.sleep(0.0001)
                 temp_counter-=1
 
             # print("P / .rediction result: ", permanent_block_number)
@@ -1556,7 +1558,7 @@ class Ludo:
 
         if  color_coin == "#fc4176":
             print("user killed")
-            print(Ludo.user_killed)
+            print(Ludo.user_killed_count)
 
             self.num_btns_state_controller(self.block_value_predict[0][2], 0)
 
@@ -1581,7 +1583,8 @@ class Ludo:
 
                 else:
                     if not self.robo_prem: 
-                            messagebox.showerror("Not possible","Sorry, not permitted")
+                        pass
+                            # messagebox.showerror("Not possible","Sorry, not permitted")
                     self.num_btns_state_controller(self.block_value_predict[0][2])
 
                     if self.robo_prem:
@@ -2074,13 +2077,33 @@ class Ludo:
                 break
 
         if  destination_reached == 1:# If all coins in block reach to the destination, winner and runner check
+            Ludo.gameover = 0
             self.take_permission += 1
             if self.take_permission == 1:# Winner check
+                if color_coin == "#fc4176":
+                    Ludo.winner = Ludo.usernames[0]
+                elif color_coin == "#ade374":
+                    Ludo.winner = Ludo.usernames[3]
+                elif color_coin == "#fcb542":
+                    Ludo.winner = Ludo.usernames[2]
+                elif color_coin == "#74c0e3":
+                    Ludo.winner = Ludo.usernames[1]
+
                 if self.robo_prem == 1 and color_coin == "#fc4176":
                     messagebox.showinfo("Winner", "Hurrah! I am the winner")
                 else:
                     messagebox.showinfo("Winner","Congrats! You are the winner")
             elif self.take_permission == 2:# 1st runner check
+                if color_coin == "#fc4176":
+                    Ludo.first_runner_up = Ludo.usernames[0]
+                elif color_coin == "#ade374":
+                    Ludo.first_runner_up = Ludo.usernames[3]
+                elif color_coin == "#fcb542":
+                    Ludo.first_runner_up = Ludo.usernames[2]
+                elif color_coin == "#74c0e3":
+                    Ludo.first_runner_up = Ludo.usernames[1]
+
+                
                 if self.robo_prem == 1 and color_coin == "#fc4176":
                     messagebox.showinfo("Winner", "Hurrah! I am 1st runner")
                 else:
@@ -2102,6 +2125,13 @@ class Ludo:
                 return False
             else:
                 self.time_for-=1
+            Ludo.game_id = [Ludo.game_id] * len(Ludo.roll_id)
+            with open("stats.csv", "a") as df:
+                df.append(Ludo.username_id, index='username')
+                df.append(Ludo.roll_id, index='roll_id')
+                df.append(Ludo.dice_face, index='dice_face')
+                df.append(Ludo.game_id, index='game_id')
+                df.append(Ludo.user_killed_count, index='killed') 
         else:
             print("Winner not decided")
 
@@ -2341,12 +2371,10 @@ if __name__ == '__main__':
     block_one_side = ImageTk.PhotoImage(Image.open("Images/1_block.png").resize((33, 33), Image.ANTIALIAS))
     Ludo(window,block_six_side,block_five_side,block_four_side,block_three_side,block_two_side,block_one_side)
     window.mainloop()
-    stop = time.stop()
-    Ludo.game_id = [Ludo.game_id] * n
-    with open("gamestats.csv") as df:
-        df['roll_id'] = Ludo.roll_id
-        df['face_id'] = Ludo.dice_face
-        df['user_killed'] = Ludo.user_killed
-        df['game_id'] = Ludo.game_id
-        df['username'] = Ludo.username_id
+    stop = time.time()
+    fields = [str(Ludo.game_id), str(Ludo.winner), str(stop-start)]
+    with open("gamestats_summary.csv", "a") as f:
+        writer = csv.writer(f)
+        writer.writerow(fields)
+
     print("Time" + str(stop-start))
