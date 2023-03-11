@@ -8,6 +8,10 @@ import pandas as pd
 import traceback
 import csv
 import random
+from itertools import zip_longest
+import os
+
+
 
 
 import time
@@ -21,9 +25,11 @@ class Ludo:
     tmp_green = []    
     username_id=[]        
 
-    df = pd.read_csv("stats.csv")
-    game_id= df["game_id"].iloc[-1]
+    df = pd.read_csv("gamestats_summary.csv")
+    game= df["game_id"]
+    game_id = int(df["game_id"].values[-1])
     game_id = game_id + 1
+    game_id_single = game_id
     roll = 0
     usernames = []
     ages = []
@@ -637,7 +643,64 @@ class Ludo:
         self.make_canvas.create_polygon(coord, width=3, fill="#74c0e3")
    
     # Total number of players: Control take at first
+
     def take_initial_control(self):
+        
+        def simulation_aftercontrol():
+            for player_index in range(int(numPlayersSim)):
+                self.total_people_play.append(player_index)
+                print(self.total_people_play)
+                self.make_command()
+                top.destroy()
+            if numPlayersSim == 2:
+                while Ludo.gameover:
+                    # operate(1, top)
+                    self.make_prediction("#fc4176")
+                    self.make_prediction("#74c0e3")
+            elif numPlayersSim == 3:
+                while Ludo.gameover:
+                # operate(1, top)
+                    self.make_prediction("#fc4176")
+                    self.make_prediction("#74c0e3")
+                    self.make_prediction("#fcb542")
+            elif numPlayersSim == 4:
+                while Ludo.gameover:
+                    # operat e(1, top)
+                    self.make_prediction("#fc4176")
+                    self.make_prediction("#74c0e3")
+                    self.make_prediction("#fcb542")
+                    self.make_prediction("#ade374")
+
+        def simulation():
+            global numPlayersSim
+            numPlayersSim = randint(2, 4)
+            df = pd.read_csv("userdetails.csv")
+            if numPlayersSim == 2:
+                b1 = randint(1, len(df)//2)
+                b2 = randint(len(df)//2, len(df))
+                Ludo.usernames.append(df["username"].iloc[b1])
+                Ludo.usernames.append(df["username"].iloc[b2])
+            elif numPlayersSim == 3:
+                b1 = randint(1, len(df)//6)
+                b2 = randint(len(df)//6, len(df)//3)
+                b3 = randint(len(df)//3, len(df))
+                Ludo.usernames.append(df["username"].iloc[b1])
+                Ludo.usernames.append(df["username"].iloc[b2])
+                Ludo.usernames.append(df["username"].iloc[b3])
+            elif numPlayersSim == 4:
+                b1 = randint(1, len(df)//6)
+                b2 = randint(len(df)//8, len(df)//6)
+                b3 = randint(len(df)//6, len(df)//4)
+                b4 = randint(len(df)//4, len(df)//2)
+                b4 = randint(len(df)//2, len(df))
+                Ludo.usernames.append(df["username"].iloc[b1])
+                Ludo.usernames.append(df["username"].iloc[b2])
+                Ludo.usernames.append(df["username"].iloc[b3])
+                Ludo.usernames.append(df["username"].iloc[b4])
+            top.destroy()
+
+            simulation_aftercontrol()
+        
         for i in range(1,4):
             self.block_value_predict[i][1]['state'] = DISABLED
         def on_enter(e):
@@ -681,6 +744,7 @@ class Ludo:
         Simulation_Button.bind("<Leave>", on_leave_btn3)
         Quit_Button.bind("<Enter>", on_enter)
         Quit_Button.bind("<Leave>", on_leave_btn4)
+        simulation()
 
         def go_back(top):
             top.destroy()
@@ -734,60 +798,8 @@ class Ludo:
             PLAY_BUTTON = Button(top2, text="PLAY",font=("Papyrus",40,"italic"), fg="black", bg="#ade374",   borderwidth=0, command=lambda: operate(1, top2) )
             PLAY_BUTTON.place(x=320, y=500) 
 
-        def simulation():
-            global numPlayersSim
-            numPlayersSim = randint(2, 4)
-            df = pd.read_csv("userdetails.csv")
-            if numPlayersSim == 2:
-                b1 = randint(1, len(df)//2)
-                b2 = randint(len(df)//2, len(df))
-                Ludo.usernames.append(df["username"].iloc[b1])
-                Ludo.usernames.append(df["username"].iloc[b2])
-            elif numPlayersSim == 3:
-                b1 = randint(1, len(df)//6)
-                b2 = randint(len(df)//6, len(df)//3)
-                b3 = randint(len(df)//3, len(df))
-                Ludo.usernames.append(df["username"].iloc[b1])
-                Ludo.usernames.append(df["username"].iloc[b2])
-                Ludo.usernames.append(df["username"].iloc[b3])
-            elif numPlayersSim == 4:
-                b1 = randint(1, len(df)//6)
-                b2 = randint(len(df)//8, len(df)//6)
-                b3 = randint(len(df)//6, len(df)//4)
-                b4 = randint(len(df)//4, len(df)//2)
-                b4 = randint(len(df)//2, len(df))
-                Ludo.usernames.append(df["username"].iloc[b1])
-                Ludo.usernames.append(df["username"].iloc[b2])
-                Ludo.usernames.append(df["username"].iloc[b3])
-                Ludo.usernames.append(df["username"].iloc[b4])
-            top.destroy()
-
-            simulation_aftercontrol()
         
-        def simulation_aftercontrol():
-            for player_index in range(int(numPlayersSim)):
-                self.total_people_play.append(player_index)
-                print(self.total_people_play)
-                self.make_command()
-                top.destroy()
-            if numPlayersSim == 2:
-                while Ludo.gameover:
-                    # operate(1, top)
-                    self.make_prediction("#fc4176")
-                    self.make_prediction("#74c0e3")
-            elif numPlayersSim == 3:
-                while Ludo.gameover:
-                # operate(1, top)
-                    self.make_prediction("#fc4176")
-                    self.make_prediction("#74c0e3")
-                    self.make_prediction("#fcb542")
-            elif numPlayersSim == 4:
-                while Ludo.gameover:
-                    # operat e(1, top)
-                    self.make_prediction("#fc4176")
-                    self.make_prediction("#74c0e3")
-                    self.make_prediction("#fcb542")
-                    self.make_prediction("#ade374")
+        
             #         Ludo.predict_red.invoke()
                 #         Ludo.predict_blue.invoke()
                 # elif numPlayersSim == 3:
@@ -1107,11 +1119,11 @@ class Ludo:
     # Get block value after prediction based on probability
     def make_prediction(self,color_indicator):
         print("face ids")
-        print(*Ludo.dice_face, sep = " ")
+        print(Ludo.dice_face)
         print("toll idds")
         
 
-        print(*Ludo.roll_id, sep = " ")
+        print(Ludo.roll_id)
         try:
             if color_indicator == "#fc4176":                
                 block_value_predict = self.block_value_predict[0]
@@ -1153,18 +1165,18 @@ class Ludo:
                     if a == 6:
                         Ludo.roll = Ludo.roll
                         Ludo.roll_id.append(Ludo.roll)
-                        Ludo.username_id.append(Ludo.usernames[0])
+                        Ludo.username_id.append(str(Ludo.usernames[0]))
                         Ludo.dice_face.append(permanent_block_number)
                     else:
                         Ludo.roll = Ludo.roll
                         Ludo.roll_id.append(Ludo.roll)
-                        Ludo.username_id.append(Ludo.usernames[0])
+                        Ludo.username_id.append(str(Ludo.usernames[0]))
                         Ludo.dice_face.append(permanent_block_number)
                         # Ludo.roll = Ludo.roll-1
                 else:
                     Ludo.roll = Ludo.roll+1
                     Ludo.roll_id.append(Ludo.roll)
-                    Ludo.username_id.append(Ludo.usernames[0])
+                    Ludo.username_id.append(str(Ludo.usernames[0]))
                     Ludo.dice_face.append(permanent_block_number)
                     
                     # print(str(Ludo.roll) + "red")
@@ -1195,7 +1207,7 @@ class Ludo:
                         elif a == 4:
                             self.main_controller("#74c0e3",'4')    
                 Ludo.roll_id.append(Ludo.roll)
-                Ludo.username_id.append(Ludo.usernames[1])
+                Ludo.username_id.append(str(Ludo.usernames[1]))
                 Ludo.dice_face.append(permanent_block_number)
                 # print(*Ludo.roll_id, sep = "\n")
                 if self.robo_prem and permanent_block_number == 6:
@@ -1232,7 +1244,7 @@ class Ludo:
                         elif a == 4:
                             self.main_controller("#fcb542",'4')    
                 Ludo.roll_id.append(Ludo.roll)
-                Ludo.username_id.append(Ludo.usernames[2])
+                Ludo.username_id.append(str(Ludo.usernames[2]))
                 Ludo.dice_face.append(permanent_block_number)
 
             elif color_indicator == "#ade374":
@@ -1262,7 +1274,7 @@ class Ludo:
                         elif a == 4:
                             self.main_controller("#ade374",'4')    
                 Ludo.roll_id.append(Ludo.roll)
-                Ludo.username_id.append(Ludo.usernames[3])
+                Ludo.username_id.append(str(Ludo.usernames[3]))
                 Ludo.dice_face.append(permanent_block_number)
 
             block_value_predict[1]['state'] = DISABLED
@@ -2088,11 +2100,46 @@ class Ludo:
                     Ludo.winner = Ludo.usernames[2]
                 elif color_coin == "#74c0e3":
                     Ludo.winner = Ludo.usernames[1]
+                
+                Ludo.game_id = [Ludo.game_id] * len(Ludo.roll_id)
+                df = pd.read_csv("stats1.csv")
+                os.remove("stats1.csv")
+                username = list(df['username'])
+                roll_id = list(df['roll_id'])
+                dice_face = list(df['dice_face'])
+                game_id = list(df['game_id'])
+                killed = list(df['killed'])
+                a = list(Ludo.username_id)
+                b = list(Ludo.roll_id)
+                c = list(Ludo.dice_face)
+                d = list(Ludo.game_id)
+                e = list(Ludo.user_killed_count)
+                username.append(a)
+                roll_id.append(b)
+                dice_face.append(c)
+                game_id.append(d)
+                killed.append(e)
+                data = {'username': username,
+                        'roll_id': roll_id,
+                        'dice_face': dice_face,
+                        'game_id': game_id,
+                        'killed': killed}
+                
+                df1 = pd.DataFrame(data)
+                # df1['username'] = username
+                # df1['roll_id'] = roll_id
+                # df1['dice_face'] = dice_face
+                # df1['game_id'] = game_id
+                # df1['killed'] = killed
+                df1.to_csv("stats1.csv")
+            
 
                 if self.robo_prem == 1 and color_coin == "#fc4176":
                     messagebox.showinfo("Winner", "Hurrah! I am the winner")
                 else:
-                    messagebox.showinfo("Winner","Congrats! You are the winner")
+                    # messagebox.showinfo("Winner","Congrats! You are the winner")
+                    Ludo.gameover = 0
+                    window.destroy()
             elif self.take_permission == 2:# 1st runner check
                 if color_coin == "#fc4176":
                     Ludo.first_runner_up = Ludo.usernames[0]
@@ -2107,7 +2154,8 @@ class Ludo:
                 if self.robo_prem == 1 and color_coin == "#fc4176":
                     messagebox.showinfo("Winner", "Hurrah! I am 1st runner")
                 else:
-                    messagebox.showinfo("Winner", "Wow! You are 1st runner")
+                    pass
+                    # messagebox.showinfo("Winner", "Wow! You are 1st runner")
             elif self.take_permission == 3:# 2nd runner check
                 if self.robo_prem == 1 and color_coin == "#fc4176":
                     messagebox.showinfo("Result", "I am 2nd runner....Not bad at all")
@@ -2120,18 +2168,13 @@ class Ludo:
             if len(self.total_people_play) == 1:
                 Ludo.gameover = 0
                 messagebox.showinfo("Game Over","Good bye!!!!")
+                window.destroy()
 
                 self.block_value_predict[0][1]['state'] = DISABLED
                 return False
             else:
                 self.time_for-=1
-            Ludo.game_id = [Ludo.game_id] * len(Ludo.roll_id)
-            with open("stats.csv", "a") as df:
-                df.append(Ludo.username_id, index='username')
-                df.append(Ludo.roll_id, index='roll_id')
-                df.append(Ludo.dice_face, index='dice_face')
-                df.append(Ludo.game_id, index='game_id')
-                df.append(Ludo.user_killed_count, index='killed') 
+            
         else:
             print("Winner not decided")
 
@@ -2372,9 +2415,10 @@ if __name__ == '__main__':
     Ludo(window,block_six_side,block_five_side,block_four_side,block_three_side,block_two_side,block_one_side)
     window.mainloop()
     stop = time.time()
-    fields = [str(Ludo.game_id), str(Ludo.winner), str(stop-start)]
-    with open("gamestats_summary.csv", "a") as f:
+    fields = [str(Ludo.game_id_single),str(numPlayersSim), str(Ludo.winner), str(stop-start)]
+    with open("gamestats_summary.csv", "a", newline='') as f:
         writer = csv.writer(f)
+        f.write("\n")
         writer.writerow(fields)
 
     print("Time" + str(stop-start))
