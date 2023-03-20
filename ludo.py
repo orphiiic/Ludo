@@ -655,21 +655,21 @@ class Ludo:
             if numPlayersSim == 2:
                 while Ludo.gameover:
                     # operate(1, top)
-                    self.make_prediction("#fc4176")
-                    self.make_prediction("#74c0e3")
+                    self.make_prediction_sim("#fc4176")
+                    self.make_prediction_sim("#74c0e3")
             elif numPlayersSim == 3:
                 while Ludo.gameover:
                 # operate(1, top)
-                    self.make_prediction("#fc4176")
-                    self.make_prediction("#74c0e3")
-                    self.make_prediction("#fcb542")
+                    self.make_prediction_sim("#fc4176")
+                    self.make_prediction_sim("#74c0e3")
+                    self.make_prediction_sim("#fcb542")
             elif numPlayersSim == 4:
                 while Ludo.gameover:
                     # operat e(1, top)
-                    self.make_prediction("#fc4176")
-                    self.make_prediction("#74c0e3")
-                    self.make_prediction("#fcb542")
-                    self.make_prediction("#ade374")
+                    self.make_prediction_sim("#fc4176")
+                    self.make_prediction_sim("#74c0e3")
+                    self.make_prediction_sim("#fcb542")
+                    self.make_prediction_sim("#ade374")
 
         def simulation():
             global numPlayersSim
@@ -744,7 +744,7 @@ class Ludo:
         Simulation_Button.bind("<Leave>", on_leave_btn3)
         Quit_Button.bind("<Enter>", on_enter)
         Quit_Button.bind("<Leave>", on_leave_btn4)
-        simulation()
+        # simulation()
 
         def go_back(top):
             top.destroy()
@@ -798,23 +798,6 @@ class Ludo:
             PLAY_BUTTON = Button(top2, text="PLAY",font=("Papyrus",40,"italic"), fg="black", bg="#ade374",   borderwidth=0, command=lambda: operate(1, top2) )
             PLAY_BUTTON.place(x=320, y=500) 
 
-        
-        
-            #         Ludo.predict_red.invoke()
-                #         Ludo.predict_blue.invoke()
-                # elif numPlayersSim == 3:
-                #     while not Ludo.destination_reached:
-                #         Ludo.predict_red.invoke()
-                #         Ludo.predict_blue.invoke()
-                #         Ludo.predict_green.invoke()
-                # elif numPlayersSim == 4:
-                #     while not Ludo.destination_reached:
-                #         Ludo.predict_red.invoke()
-                #         Ludo.predict_blue.invoke()
-                #         Ludo.predict_green.invoke()
-                #         Ludo.predict_yellow.invoke()
-                
-
                     
                     
 
@@ -840,10 +823,6 @@ class Ludo:
 
                 def sel(var):
                     selection = str(var.get())
-
-
-                # PLAY_BUTTON = Button(top3, text="PLAY",font=("Papyrus",40,"italic"), fg="black", bg="#ade374",   borderwidth=0, command=lambda: filtering() )
-                # PLAY_BUTTON.place(x=320, y=600s
                 def player1():
                     usernameLabel1 = Label(top3, text="Username", font=("Papyrus", 20, "bold"), bg="#fc4176", fg="black")
                     usernameLabel1.place(x=50, y=150)
@@ -974,9 +953,9 @@ class Ludo:
                         PLAY_BUTTON.place(x=320, y=600) 
                     else:
                         messagebox.showerror("Input Error", "Please input number of players between 2 and 4")
-                        # top3.destroy()
-                        # top.destroy()
-                        # # self.take_initial_control()
+                        top3.destroy()
+                        top.destroy()
+                        self.take_initial_control()
                     
                 def check_players(response_take_int, response_take):
                         if response_take_int == 2:
@@ -1019,40 +998,34 @@ class Ludo:
                             top.destroy()
                         else:
                             messagebox.showerror("Input Error", "Please input number of players between 2 and 4")
-                            top3.destroy()
-                            top.destroy()
-                            self.take_initial_control()
-                        # top3.destroy()
-                        # top.destroy()
+                            # top3.destroy()
+                            # top.destroy()
+                            # self.take_initial_control()
+                        top3.destroy()
+                        top.destroy()
                         
 
-                        # Ludo.usernames.append(str(usernameEntry1.get()))
-                        # Ludo.usernames.append(str(usernameEntry2.get()))
-                        # Ludo.usernames.append(str(usernameEntry3.get()))
-                        # Ludo.usernames.append(str(usernameEntry4.get()))
+                        Ludo.usernames.append(str(usernameEntry1.get()))
+                        Ludo.usernames.append(str(usernameEntry2.get()))
+                        Ludo.usernames.append(str(usernameEntry3.get()))
+                        Ludo.usernames.append(str(usernameEntry4.get()))
 
-                        # Ludo.ages.append(str(ageEntry1.get()))
-                        # Ludo.ages.append(str(ageEntry2.get()))
-                        # Ludo.ages.append(str(ageEntry3.get()))
-                        # Ludo.ages.append(str(ageEntry4.get()))
+                        Ludo.ages.append(str(ageEntry1.get()))
+                        Ludo.ages.append(str(ageEntry2.get()))
+                        Ludo.ages.append(str(ageEntry3.get()))
+                        Ludo.ages.append(str(ageEntry4.get()))
 
-                        # Ludo.countries.append(str(country1.get()))
-                        # Ludo.countries.append(str(country2.get()))
-                        # Ludo.countries.append(str(country3.get()))
-                        # Ludo.countries.append(str(country4.get()))
+                        Ludo.countries.append(str(country1.get()))
+                        Ludo.countries.append(str(country2.get()))
+                        Ludo.countries.append(str(country3.get()))
+                        Ludo.countries.append(str(country4.get()))
 
-                        # Ludo.genders.append(str(gender1.get()))
-                        # Ludo.genders.append(str(gender2.get()))
-                        # Ludo.genders.append(str(gender3.get()))
-                        # Ludo.genders.append(str(gender4.get()))
+                        Ludo.genders.append(str(gender1.get()))
+                        Ludo.genders.append(str(gender2.get()))
+                        Ludo.genders.append(str(gender3.get()))
+                        Ludo.genders.append(str(gender4.get()))
 
-                    
-                    # df1 = df1.append(pd.DataFrame(xtra, columns=['col1']), ignore_index=True)
-                    # print(Ludo.usernames)
-                    # print(Ludo.countries)
-                    # print(Ludo.ages)
-                    # print(Ludo.genders)
-                    
+            
              
                    
         def operate(ind, top2):
@@ -1118,9 +1091,229 @@ class Ludo:
 
     # Get block value after prediction based on probability
     def make_prediction(self,color_indicator):
-        print("face ids")
+        try:
+            if color_indicator == "#fc4176":
+                block_value_predict = self.block_value_predict[0]
+                if self.robo_prem and self.count_robo_stage_from_start < 3:
+                    self.count_robo_stage_from_start += 1
+                if self.robo_prem and self.count_robo_stage_from_start == 3 and self.six_counter < 2:
+                    permanent_block_number = self.move_red_counter = 6
+                    self.count_robo_stage_from_start += 1
+                else:    
+                    permanent_block_number = self.move_red_counter = randint(1, 6)
+
+            elif color_indicator == "#74c0e3":
+                block_value_predict = self.block_value_predict[1]
+                permanent_block_number = self.move_sky_blue_counter = randint(1, 6)
+                if self.robo_prem and permanent_block_number == 6:
+                    for coin_loc in self.red_coin_position:
+                        if coin_loc>=40 and coin_loc<=46:
+                            permanent_block_number = self.move_sky_blue_counter = randint(1, 5)
+                            break
+                            
+            elif color_indicator == "#fcb542":
+                block_value_predict = self.block_value_predict[2]
+                permanent_block_number = self.move_yellow_counter = randint(1, 6)
+
+            else:
+                block_value_predict = self.block_value_predict[3]
+                permanent_block_number = self.move_green_counter = randint(1, 6)
+
+            block_value_predict[1]['state'] = DISABLED
+
+            # Illusion of coin floating
+            temp_counter = 12
+            while temp_counter>0:
+                move_temp_counter = randint(1, 6)
+                block_value_predict[0]['image'] = self.block_number_side[move_temp_counter - 1]
+                self.window.update()
+                time.sleep(0.1)
+                temp_counter-=1
+
+            print("Prediction result: ", permanent_block_number)
+
+            # Permanent predicted value containing image set
+            block_value_predict[0]['image'] = self.block_number_side[permanent_block_number-1]
+            if self.robo_prem == 1 and color_indicator == "#fc4176":
+                self.window.update()
+                time.sleep(0.4)
+            self.instructional_btn_customization_based_on_current_situation(color_indicator,permanent_block_number,block_value_predict)
+        except:
+            print("Force Stop Error in Prediction")
+        
+    #     # print("face ids")
+    #     print(Ludo.dice_face)
+    #     # print("toll idds")
+        
+
+    #     print(Ludo.roll_id)
+    #     try:
+    #         if color_indicator == "#fc4176":                
+    #             block_value_predict = self.block_value_predict[0]
+    #             # print("ello"+str(block_value_predict))
+    #             if self.robo_prem and self.count_robo_stage_from_start < 3:
+    #                 self.count_robo_stage_from_start += 1
+    #             if self.robo_prem and self.count_robo_stage_from_start == 3 and self.six_counter < 2:
+    #                 permanent_block_number = self.move_red_counter = 6
+    #                 self.count_robo_stage_from_start += 1
+    #             else:    
+    #                 permanent_block_number = self.move_red_counter = randint(1, 6)
+    #             if permanent_block_number == 6:
+                    
+    #                 self.make_prediction("#fc4176")       
+    #             # else:
+    #             #     if Ludo.tmp_red:
+    #             #             self.main_controller("#fc4176",'4')         
+    #             if permanent_block_number == 6:
+    #                 self.make_prediction("#fc4176")
+    #                 # a = Ludo.roll_id[-1]
+    #                 # if a == 6:
+    #                 #     Ludo.roll = Ludo.roll
+    #                 #     Ludo.roll_id.append(Ludo.roll)
+    #                 #     # Ludo.username_id.append(str(Ludo.usernames[0]))
+    #                 #     Ludo.dice_face.append(permanent_block_number)
+    #                     # Ludo.roll = Ludo.roll
+    #                     # Ludo.roll_id.append(Ludo.roll)
+    #                     # # Ludo.username_id.append(str(Ludo.usernames[0]))
+    #                     # Ludo.dice_face.append(permanent_block_number)
+    #                     # Ludo.roll = Ludo.roll-1
+    #             else:
+    #                 Ludo.roll = Ludo.roll+1
+    #                 Ludo.roll_id.append(Ludo.roll)
+    #                 # Ludo.username_id.append(str(Ludo.usernames[0]))
+    #                 Ludo.dice_face.append(permanent_block_number)
+                    
+    #                 # print(str(Ludo.roll) + "red")
+    #         elif color_indicator == "#74c0e3":
+    #             block_value_predict = self.block_value_predict[1]
+    #             permanent_block_number = self.move_sky_blue_counter = randint(1, 6)
+    #             if permanent_block_number == 6:
+    #                 # a = randint(1,4)
+    #                 # Ludo.tmp_blue.append(a)
+    #                 # if a == 1:
+    #                 #     self.main_controller("#74c0e3",'1')
+    #                 # elif a == 2:
+    #                 #     self.main_controller("#74c0e3",'2')
+    #                 # elif a == 3:
+    #                 #     self.main_controller("#74c0e3",'3')
+    #                 # elif a == 4:
+    #                 #     self.main_controller("#74c0e3",'4')  
+    #                 self.make_prediction("#74c0e3")            
+    #             # else:
+    #                 # self.make_prediction("#74c0e3") 
+    #                 # pass
+    #                 #  if Ludo.tmp_blue:
+    #                     # a = int(random.choice(Ludo.tmp_blue))
+    #                     # if a == 1:
+    #                     #     self.main_controller("#74c0e3",'1')
+    #                     # elif a == 2:
+    #                     #     self.main_controller("#74c0e3",'2')
+    #                     # elif a == 3:
+    #                     #     self.main_controller("#74c0e3",'3')
+    #                     # elif a == 4:
+    #                     #     self.main_controller("#74c0e3",'4')    
+    #             # Ludo.roll_id.append(Ludo.roll)
+    #             # Ludo.username_id.append(str(Ludo.usernames[1]))
+    #             Ludo.dice_face.append(permanent_block_number)
+    #             # print(*Ludo.roll_id, sep = "\n")
+    #             if self.robo_prem and permanent_block_number == 6:
+    #                 for coin_loc in self.red_coin_position:
+    #                     if coin_loc>=40 and coin_loc<=46:
+    #                         permanent_block_number = self.move_sky_blue_counter = randint(1, 5)                        
+    #                         break
+                            
+    #         elif color_indicator == "#fcb542":
+    #             block_value_predict = self.block_value_predict[2]
+    #             permanent_block_number = self.move_yellow_counter = randint(1, 6)
+    #             if permanent_block_number == 6:
+    #                 # self.make_prediction("#fcb542")
+    #                 # a = randint(1,4)
+    #                 # Ludo.tmp_yellow.append(a)
+    #                 # if a == 1:
+    #                 #     self.main_controller("#fcb542",'1')
+    #                 # elif a == 2:
+    #                 #     self.main_controller("#fcb542",'2')
+    #                 # elif a == 3:
+    #                 #     self.main_controller("#fcb542",'3')
+    #                 # elif a == 4:
+    #                 #     self.main_controller("#fcb542",'4') 
+    #                 self.make_prediction("#fcb542")             
+    #             else:
+    #                 pass
+    #                 # if Ludo.tmp_yellow:
+    #                     # a = int(random.choice(Ludo.tmp_yellow))
+    #                     # if a == 1:
+    #                     #     self.main_controller("#fcb542",'1')
+    #                     # elif a == 2:
+    #                     #     self.main_controller("#fcb542",'2')
+    #                     # elif a == 3:
+    #                     #     self.main_controller("#fcb542",'3')
+    #                     # elif a == 4:
+    #                 # self.main_controller("#fcb542",'4')    
+    #             Ludo.roll_id.append(Ludo.roll)
+    #             Ludo.username_id.append(str(Ludo.usernames[2]))
+    #             Ludo.dice_face.append(permanent_block_number)
+
+    #         elif color_indicator == "#ade374":
+    #             block_value_predict = self.block_value_predict[3]
+    #             permanent_block_number = self.move_green_counter = randint(1, 6)
+    #             if permanent_block_number == 6:
+    #                 # a = randint(1,4)
+    #                 # Ludo.tmp_green.append(a)
+    #                 # if a == 1:
+    #                 #     self.main_controller("#ade374",'1')
+    #                 # elif a == 2:
+    #                 #     self.main_controller("#ade374",'2')
+    #                 # elif a == 3:
+    #                 #     self.main_controller("#ade374",'3')
+    #                 # elif a == 4:
+    #                 #     self.main_controller("#ade374",'4')  
+    #                 self.make_prediction("#ade374")            
+    #             else:
+    #                 pass
+    #                 # if Ludo.tmp_green:
+    #                     # a = int(random.choice(Ludo.tmp_green))
+    #                     # if a == 1:
+    #                     #     self.main_controller("#ade374",'1')
+    #                     # elif a == 2:
+    #                     #     self.main_controller("#ade374",'2')
+    #                     # elif a == 3:
+    #                     #     self.main_controller("#ade374",'3')
+    #                     # elif a == 4:
+    #                     #     self.main_controller("#ade374",'4')    
+    #             Ludo.roll_id.append(Ludo.roll)
+    #             Ludo.username_id.append(str(Ludo.usernames[3]))
+    #             Ludo.dice_face.append(permanent_block_number)
+
+    #         block_value_predict[1]['state'] = DISABLED
+
+    #         # Illusion of coin floating
+    #         temp_counter = 12
+    #         while temp_counter>0:
+    #             move_temp_counter = randint(1, 6)
+    #             block_value_predict[0]['image'] = self.block_number_side[move_temp_counter - 1]
+    #             self.window.update()
+    #             time.sleep(0.0001)
+    #             temp_counter-=1
+
+    #         # print("P / .rediction result: ", permanent_block_number)
+    #         # Ludo.dice_face.append(permanent_block_number)
+    #         # df['username']
+
+    #         # Permanent predicted value containing image set
+    #         block_value_predict[0]['image'] = self.block_number_side[permanent_block_number-1]
+    #         if self.robo_prem == 1 and color_indicator == "#fc4176":
+    #             self.window.update()
+    #             time.sleep(0.4)
+    #         self.instructional_btn_customization_based_on_current_situation(color_indicator,permanent_block_number,block_value_predict)
+    #     except Exception:
+    #             traceback.print_exc()
+    #         # print("Force Stop Error in Prediction")
+    # # Get block value after prediction based on probability
+    def make_prediction_sim(self,color_indicator):
+        # print("face ids")
         print(Ludo.dice_face)
-        print("toll idds")
+        # print("toll idds")
         
 
         print(Ludo.roll_id)
@@ -1165,18 +1358,18 @@ class Ludo:
                     if a == 6:
                         Ludo.roll = Ludo.roll
                         Ludo.roll_id.append(Ludo.roll)
-                        Ludo.username_id.append(str(Ludo.usernames[0]))
+                        # Ludo.username_id.append(str(Ludo.usernames[0]))
                         Ludo.dice_face.append(permanent_block_number)
                     else:
                         Ludo.roll = Ludo.roll
                         Ludo.roll_id.append(Ludo.roll)
-                        Ludo.username_id.append(str(Ludo.usernames[0]))
+                        # Ludo.username_id.append(str(Ludo.usernames[0]))
                         Ludo.dice_face.append(permanent_block_number)
                         # Ludo.roll = Ludo.roll-1
                 else:
                     Ludo.roll = Ludo.roll+1
                     Ludo.roll_id.append(Ludo.roll)
-                    Ludo.username_id.append(str(Ludo.usernames[0]))
+                    # Ludo.username_id.append(str(Ludo.usernames[0]))
                     Ludo.dice_face.append(permanent_block_number)
                     
                     # print(str(Ludo.roll) + "red")
@@ -2415,7 +2608,9 @@ if __name__ == '__main__':
     Ludo(window,block_six_side,block_five_side,block_four_side,block_three_side,block_two_side,block_one_side)
     window.mainloop()
     stop = time.time()
-    fields = [str(Ludo.game_id_single),str(numPlayersSim), str(Ludo.winner), str(stop-start)]
+    # numberPlayersText = numberPlayersText
+    numberPlayersText = numPlayersSim
+    fields = [str(Ludo.game_id_single),str(numberPlayersText), str(Ludo.winner), str(stop-start)]
     with open("gamestats_summary.csv", "a", newline='') as f:
         writer = csv.writer(f)
         f.write("\n")
